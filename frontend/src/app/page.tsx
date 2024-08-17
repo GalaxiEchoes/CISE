@@ -1,7 +1,15 @@
+"use client";
+import { dummyArticles } from "@/mock/dummyData";
+import { CardArticle } from "@/components/CardArticle";
+import { Nav } from "@/components/Nav";
+
 export default function Home() {
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <h1>SPEED APP</h1>
+        <main>
+            <Nav />
+            {dummyArticles.map((article) => (
+                <CardArticle article={article} key={article.id} />
+            ))}
         </main>
     );
 }
