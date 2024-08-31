@@ -1,5 +1,11 @@
 "use client";
 
+import CreateArticleComponent from "@/components/CreateArticle";
+
 export default function AddArticle() {
-    return <div>Add article page</div>;
+    return (
+        <main>
+            <CreateArticleComponent />
+        </main>
+    );
 }
