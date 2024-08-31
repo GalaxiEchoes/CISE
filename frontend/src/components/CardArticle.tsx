@@ -1,4 +1,4 @@
-import { Article } from "@/app/models/Article";
+import { Article } from "@/models/Article";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 interface CardArticleProps {
