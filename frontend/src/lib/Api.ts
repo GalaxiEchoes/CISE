@@ -4,7 +4,7 @@ const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
 
 export const apiGetArticles = async () => {
     try {
-        return await apiGet(`api/Article`);
+        return await apiGet(`/api/Article`);
     } catch (error) {
         throw error;
     }
@@ -12,7 +12,7 @@ export const apiGetArticles = async () => {
 
 export const apiGetArticleById = async (id: string) => {
     try {
-        return await apiGet(`api/Article/${id}`);
+        return await apiGet(`/api/Article/${id}`);
     } catch (error) {
         throw error;
     }
@@ -20,7 +20,7 @@ export const apiGetArticleById = async (id: string) => {
 
 export const apiDeleteArticleById = async (id: string) => {
     try {
-        return await apiDelete(`api/Article/${id}`);
+        return await apiDelete(`/api/Article/${id}`);
     } catch (error) {
         throw error;
     }
@@ -28,7 +28,7 @@ export const apiDeleteArticleById = async (id: string) => {
 
 export const apiSubmitArticle = async (data: Article) => {
     try {
-        return await apiPost(`api/Article`, data);
+        return await apiPost(`/api/Article`, data);
     } catch (error) {
         throw error;
     }
