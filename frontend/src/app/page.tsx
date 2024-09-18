@@ -1,10 +1,6 @@
 "use client"
-import ShowArticlesList from "@/components/ShowArticleList";
+import ShowArticlesList from "@/components/Articles/ShowArticleList";
 
 export default function Home() {
-    return (
-        <main>
-        <ShowArticlesList />
-        </main>
-    );
+    return <ShowArticlesList />;
 }

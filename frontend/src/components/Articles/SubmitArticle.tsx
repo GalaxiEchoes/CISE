@@ -1,9 +1,9 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Article, DefaultEmptyArticle } from "./Articles";
+import { Article, DefaultEmptyArticle } from "../../models/Articles";
+import { apiSubmitArticle } from "@/lib/Api";
 
-const CreateArticleComponent = () => {
+const SubmitArticle = () => {
     const navigate = useRouter();
 
     const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
@@ -12,44 +12,18 @@ const CreateArticleComponent = () => {
         setArticle({ ...article, [event.target.name]: event.target.value });
     };
 
-    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log('Form submitted');
-        console.log(article);
-        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/article", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-
-            body: JSON.stringify(article),
-        })
-            .then((res) => {
-                console.log(res);
-                setArticle(DefaultEmptyArticle);
-
-                // Push to /
-                navigate.push("/");
-            })
-            .catch((err) => {
-                console.log("Error from CreateArticle: " + err);
-            });
+        const res = await apiSubmitArticle(article);
+        if (res?.ok) navigate.push("/");
     };
 
     return (
         <div className="CreateArticle">
             <div className="container">
                 <div className="row">
-                    <div className="col-md-8 m-auto">
-                        <br />
-                        <Link
-                            href="/"
-                            className="btn btn-outline-warning float-left"
-                        >
-                            Show Article List
-                        </Link>
-                    </div>
                     <div className="col-md-10 m-auto">
-                        <h1 className="display-4 text-center">Add Article</h1>
-                        <p className="lead text-center">Create new Article</p>
+                        <p className="lead text-center">Submit new Article</p>
                         <form noValidate onSubmit={onSubmit}>
                             <div className="form-group">
                                 <input
@@ -140,4 +114,4 @@ const CreateArticleComponent = () => {
         </div>
     );
 };
-export default CreateArticleComponent;
+export default SubmitArticle;

@@ -3,7 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { ContextTheme } from "@/contexts/ContextTheme";
 import { cn } from "@/lib/utils";
-import BootstrapClient from "@/components/BootstrapClient";
+import { Navbar } from "@/components/Navbar/Navbar";
 
 const fontSans = FontSans({
     subsets: ["latin"],
@@ -23,9 +23,20 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={fontSans.className}>
-                <BootstrapClient />
-                {children}
+                className={cn(
+                    "min-h-screen bg-background font-sans antialiased",
+                    fontSans.variable,
+                )}
+            >
+                <ContextTheme
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <Navbar />
+                    <main>{children}</main>
+                </ContextTheme>
             </body>
         </html>
     );

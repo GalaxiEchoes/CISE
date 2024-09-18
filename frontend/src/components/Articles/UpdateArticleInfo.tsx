@@ -6,12 +6,15 @@ import React, {
     ChangeEventHandler,
 } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Article, DefaultEmptyArticle } from "./Articles";
+import { Article, DefaultEmptyArticle } from "../../models/Articles";
 import Link from "next/link";
+
+// make this a simple form, without having to update state on each change
 function UpdateArticleInfo() {
     const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
     const id = useParams<{ id: string }>().id;
     const router = useRouter();
+
     useEffect(() => {
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${id}`)
             .then((res) => {
@@ -24,12 +27,15 @@ function UpdateArticleInfo() {
                 console.log("Error from UpdateArticleInfo: " + err);
             });
     }, [id]);
+
     const inputOnChange = (event: ChangeEvent<HTMLInputElement>) => {
         setArticle({ ...article, [event.target.name]: event.target.value });
     };
+
     const textAreaOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setArticle({ ...article, [event.target.name]: event.target.value });
     };
+
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${id}`, {
@@ -44,6 +50,7 @@ function UpdateArticleInfo() {
                 console.log("Error from UpdateArticleInfo: " + err);
             });
     };
+
     return (
         <div className="UpdateArticleInfo">
             <div className="container">

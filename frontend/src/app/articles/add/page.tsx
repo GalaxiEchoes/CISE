@@ -1,11 +1,7 @@
 "use client";
 
-import CreateArticleComponent from "@/components/CreateArticle";
+import SubmitArticle from "@/components/Articles/SubmitArticle";
 
 export default function AddArticle() {
-    return (
-        <main>
-            <CreateArticleComponent />
-        </main>
-    );
+    return <SubmitArticle />;
 }
