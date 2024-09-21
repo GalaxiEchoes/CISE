@@ -23,8 +23,10 @@ export const ArticleCardDetails = ({ article }: IProp) => {
                 <Image
                     src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d"
                     alt="Articles"
-                    width={500}
-                    height={500}
+                    width="500"
+                    height="500"
+                    className="h-auto w-[50%]"
+                    priority={true}
                 />
                 <CardTitle>{`${article.title}`}</CardTitle>
             </CardHeader>
