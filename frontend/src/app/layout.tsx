@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { ContextTheme } from "@/contexts/ContextTheme";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
-import { Navbar } from "@/components/Navbar/Navbar";
+import { Navbar } from "@/components/Navigation/Navbar";
 
 const fontSans = FontSans({
     subsets: ["latin"],
@@ -24,19 +25,23 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body
                 className={cn(
-                    "min-h-screen bg-background font-sans antialiased",
+                    "bg-background font-sans antialiased",
                     fontSans.variable,
                 )}
             >
-                <ContextTheme
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <Navbar />
-                    <main>{children}</main>
-                </ContextTheme>
+                <AuthProvider>
+                    <ContextTheme
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <main className="h-full">
+                            <Navbar />
+                            {children}
+                        </main>
+                    </ContextTheme>
+                </AuthProvider>
             </body>
         </html>
     );

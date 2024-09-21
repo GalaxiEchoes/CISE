@@ -3,6 +3,7 @@ import { ArticleController } from "./article.controller";
 import { ArticleService } from "./article.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Article, ArticleSchema } from "./article.schema";
+import { FirebaseAdmin } from "src/config/firebase.setup";
 
 @Module({
     imports: [
@@ -11,6 +12,6 @@ import { Article, ArticleSchema } from "./article.schema";
         ]),
     ],
     controllers: [ArticleController],
-    providers: [ArticleService],
+    providers: [ArticleService, FirebaseAdmin],
 })
 export class ArticleModule {}
