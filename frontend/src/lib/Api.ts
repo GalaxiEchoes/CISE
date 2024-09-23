@@ -52,6 +52,14 @@ export const apiValidateToken = async (idToken: any): Promise<any> => {
     }
 };
 
+export const apiLogin = async (idToken: string) => {
+    try {
+        return await apiPost(`/api/Account/login`, { idToken: idToken });
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const apiLogout = async () => {
     try {
         return await apiGet(`/api/Account/logout`);

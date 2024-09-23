@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Req } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, Res } from "@nestjs/common";
 import { AccountService } from "./account.service";
 import { NewUserDto } from "src/models/dto/newUser.dto";
-import { Request } from "express";
+import { Request, Response } from "express";
 
 @Controller("api/account")
 export class AccountController {
@@ -21,10 +21,31 @@ export class AccountController {
         return this.service.validateToken(idToken);
     }
 
+    @Post("/login")
+    async login(@Req() req: Request, @Res() res: Response): Promise<void> {
+        const idToken = req?.body?.idToken;
+        const isValid = await this.service.validateToken(idToken);
+
+        if (isValid) {
+            res.cookie("idToken", idToken, {
+                path: "/",
+                httpOnly: true,
+                maxAge: 7 * 24 * 60 * 60, // 1 week
+            });
+            res.status(200).json({ message: "Logged in" });
+        }
+    }
+
     @Get("/logout")
-    async logout(@Req() req: Request): Promise<void> {
+    async logout(@Req() req: Request, @Res() res: Response): Promise<void> {
         const idToken = req?.cookies?.idToken;
-        return this.service.revokeUserToken(idToken);
+        await this.service.revokeUserToken(idToken);
+        res.cookie("idToken", "", {
+            path: "/",
+            httpOnly: true,
+            maxAge: 0,
+        });
+        res.status(200).json({ message: "Logged out" });
     }
 
     @Post("/register")

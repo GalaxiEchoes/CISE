@@ -23,7 +23,7 @@ export default function LoginPage() {
                 </CardContent>
                 <CardFooter>
                     <CardDescription>
-                        {`Don't have an account? Register`}
+                        {`Don't have an account? Register `}
                         <Link href="/account/register" className="text-primary">
                             here.
                         </Link>

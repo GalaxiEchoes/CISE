@@ -1,5 +1,5 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { apiRegisterAccount, apiLogout } from "./Api";
+import { apiRegisterAccount, apiLogin, apiLogout } from "./Api";
 import { LoginRequest, RegisterRequest } from "@/models/AccountRequests";
 import {
     Auth,
@@ -24,14 +24,7 @@ export const loginService = async (req: LoginRequest): Promise<boolean> => {
         const res = await signInWithEmailAndPassword(AUTH, email, password);
         if (res.user) {
             const idToken = await res.user.getIdToken();
-
-            await fetch("/api/set-cookie", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ idToken }),
-            });
+            await apiLogin(idToken);
             return true;
         }
     } catch (error) {}
@@ -41,12 +34,6 @@ export const loginService = async (req: LoginRequest): Promise<boolean> => {
 export const logoutService = async (): Promise<void> => {
     try {
         await signOut(AUTH);
-
-        await fetch("/api/rm-cookie", {
-            method: "POST",
-            credentials: "include",
-        });
-
         await apiLogout();
     } catch (error) {}
 };
