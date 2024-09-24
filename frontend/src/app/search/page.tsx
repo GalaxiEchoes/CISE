@@ -26,10 +26,13 @@ const columns = [
 export default function SearchPage() {
     const [searchResults, setSearchResults] = React.useState<Article[]>([]);
     const [searchPhrase, setSearchPhrase] = React.useState("");
+    const [isLoading, setIsLoading] = React.useState(false);
 
     async function search(e: React.FormEvent) {
         e.preventDefault();
+        setIsLoading(true);
         const res = await searchArticles(searchPhrase);
+        setIsLoading(false);
         setSearchResults(res);
     }
 
@@ -51,7 +54,9 @@ export default function SearchPage() {
                 <Button type="submit">Submit</Button>
             </form>
 
-            {searchResults.length ? (
+            {isLoading && "Loading..."}
+
+            {!isLoading && searchResults.length ? (
                 <table className="w-full border-2 border-solid border-black">
                     <thead className="border-b-2 border-solid border-black text-xl">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -94,8 +99,10 @@ export default function SearchPage() {
                         ))}
                     </tbody>
                 </table>
-            ) : (
+            ) : !isLoading ? (
                 "No results..."
+            ) : (
+                ""
             )}
         </div>
     );
