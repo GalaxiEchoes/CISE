@@ -24,7 +24,7 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body
                 className={cn(
-                    "min-h-screen bg-background font-sans antialiased",
+                    "min-h-screen bg-background font-sans antialiased p-2",
                     fontSans.variable,
                 )}
             >
@@ -35,7 +35,7 @@ export default function RootLayout({
                     disableTransitionOnChange
                 >
                     <Navbar />
-                    <main>{children}</main>
+                    <main className="mt-4">{children}</main>
                 </ContextTheme>
             </body>
         </html>
