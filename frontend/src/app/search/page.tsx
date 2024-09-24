@@ -52,12 +52,15 @@ export default function SearchPage() {
             </form>
 
             {searchResults.length ? (
-                <table className="border-2 border-solid border-black">
+                <table className="w-full border-2 border-solid border-black">
                     <thead className="border-b-2 border-solid border-black text-xl">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <th key={header.id}>
+                                    <th
+                                        key={header.id}
+                                        className="border-r-[1px] border-solid border-gray-200"
+                                    >
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -77,7 +80,10 @@ export default function SearchPage() {
                                 className="border-b-[1px] border-solid border-gray-500"
                             >
                                 {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className="p-2">
+                                    <td
+                                        key={cell.id}
+                                        className="border-r-[1px] border-solid border-gray-200 p-2"
+                                    >
                                         {flexRender(
                                             cell.column.columnDef.cell,
                                             cell.getContext(),
