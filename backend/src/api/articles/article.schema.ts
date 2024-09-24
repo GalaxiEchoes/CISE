@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
+import { UserRating } from "./user-rating";
 export type ArticleDocument = HydratedDocument<Article>;
 
 @Schema()
@@ -25,5 +26,11 @@ export class Article {
 
     @Prop()
     evidence: string;
+
+    @Prop()
+    ratings: UserRating[];
+
+    @Prop()
+    averageRating: number;
 }
 export const ArticleSchema = SchemaFactory.createForClass(Article);

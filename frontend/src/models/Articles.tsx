@@ -1,3 +1,8 @@
+export type UserRating = {
+    username: string;
+    rating: number;
+};
+
 export type Article = {
     _id?: string;
     title?: string;
@@ -7,6 +12,8 @@ export type Article = {
     doi?: string;
     claim?: string;
     evidence?: string;
+    ratings?: UserRating[];
+    averageRating?: number;
 };
 
 export const DefaultEmptyArticle: Article = {
@@ -18,4 +25,6 @@ export const DefaultEmptyArticle: Article = {
     doi: "",
     claim: "",
     evidence: "",
+    ratings: [],
+    averageRating: 0,
 };
