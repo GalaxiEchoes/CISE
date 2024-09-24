@@ -62,7 +62,7 @@ export const Sidebar: React.FC = () => {
         <div
         style={{
           marginLeft: isOpen ? "250px" : "60px",
-          transition: "margin-left 0.3s",
+          transition: "margin-left 0.5s",
         }}
       ></div>
 
