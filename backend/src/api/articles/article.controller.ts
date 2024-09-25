@@ -13,7 +13,7 @@ import {
 import { ArticleService } from "./article.service";
 import { CreateArticleDto } from "./create-article.dto";
 import { error } from "console";
-import { Auth } from "src/auth/auth.decorator";
+import { Auth } from "../../auth/auth.decorator";
 
 @Controller("api/article")
 export class ArticleController {

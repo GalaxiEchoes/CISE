@@ -5,7 +5,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ArticleModule } from "./api/articles/article.module";
 import { AccountModule } from "./api/account/account.module";
 import { ConfigModule } from "@nestjs/config";
-import { FirebaseAdmin } from "src/config/firebase.setup";
+import { FirebaseAdmin } from "./config/firebase.setup";
 
 @Module({
     imports: [
