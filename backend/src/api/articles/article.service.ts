@@ -20,6 +20,14 @@ export class ArticleService {
         return await this.articleModel.findById(id).exec();
     }
 
+    async search(query: string): Promise<Article[]> {
+        return await this.articleModel
+            .find({
+                title: { $regex: `.*${query}.*`, $options: "i" },
+            })
+            .exec();
+    }
+
     async create(createArticleDto: CreateArticleDto) {
         return await this.articleModel.create(createArticleDto);
     }

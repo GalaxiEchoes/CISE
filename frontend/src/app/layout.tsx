@@ -4,7 +4,7 @@ import "./globals.css";
 import { ContextTheme } from "@/contexts/ContextTheme";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
-import { Navbar } from "@/components/Navigation/Navbar";
+import { Sidebar } from "@/components/Navbar/Sidebar";
 
 const fontSans = FontSans({
     subsets: ["latin"],
@@ -36,10 +36,10 @@ export default function RootLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
-                        <main className="h-full">
-                            <Navbar />
-                            {children}
-                        </main>
+                        <div className="sideNav">
+                            <Sidebar />
+                            <main className="mainContent">{children}</main>
+                        </div>
                     </ContextTheme>
                 </AuthProvider>
             </body>

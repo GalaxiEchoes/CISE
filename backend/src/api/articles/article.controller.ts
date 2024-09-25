@@ -8,6 +8,7 @@ import {
     Param,
     Post,
     Put,
+    Query,
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { CreateArticleDto } from "./create-article.dto";
@@ -28,6 +29,22 @@ export class ArticleController {
     async findAll() {
         try {
             return this.articleService.findAll();
+        } catch {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    error: "No Articles found",
+                },
+                HttpStatus.NOT_FOUND,
+                { cause: error },
+            );
+        }
+    }
+
+    @Get("/search")
+    async search(@Query("query") query: string) {
+        try {
+            return this.articleService.search(query);
         } catch {
             throw new HttpException(
                 {

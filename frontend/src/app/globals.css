@@ -68,3 +68,67 @@
     @apply bg-background text-foreground;
   }
 }
+
+.sideNav{
+  display: flex;
+}
+
+.mainContent{
+  flex-grow: 1;
+  transition: margin-left 0.5s;
+}
+
+.toggleButton {
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  position: fixed;
+  top: 20px;
+  z-index: 1;
+  /*transition: left 0.5s ease-in-out;*/
+  transition: left 0.5s ;
+}
+
+.sidebar {
+  /*
+  top: 0;
+  left: -5rem;*/
+  transition: width 0.5s;
+  overflow-x: 'hidden';
+  background-color: #4d56a5;
+  color: #fff;
+  height: 100%;
+  width: 0;
+  z-index: 1;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 60px;
+  position: fixed;
+}
+
+.nav a{
+  padding: 8px 8px 8px 8px;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  background-color: aliceblue;
+  display: block;
+  transition: 0.3s;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.navHeader a{
+  padding: 16px 8px 12px 8px;
+  text-decoration: none;
+  color: aliceblue;
+  font-size: 20px;
+  display: block;
+  transition: 0.5s;
+}
+
+.nav a:hover{
+  color: rgb(0, 0, 0);
+  background-color: rgb(169, 169, 169);
+}
