@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
+import LogoutButton from "../Account/LogoutButton";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Sidebar: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const { isAuthenticated } = useAuth();
+    const [isOpen, setIsOpen] = useState(true);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -37,6 +40,17 @@ export const Sidebar: React.FC = () => {
                                 <Link href={"/search"}>
                                     <h2>Search Article</h2>
                                 </Link>
+                            </li>
+                            <li>
+                                {isAuthenticated ? (
+                                    <LogoutButton />
+                                ) : (
+                                    <Button>
+                                        <Link href={"/account/login"}>
+                                            <h2>Login</h2>
+                                        </Link>
+                                    </Button>
+                                )}
                             </li>
                             <li>
                                 <>
