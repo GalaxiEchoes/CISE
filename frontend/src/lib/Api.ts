@@ -1,4 +1,5 @@
 import { Article } from "@/models/Articles";
+import { RegisterRequest } from "@/models/AccountRequests";
 
 const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
 
@@ -34,13 +35,55 @@ export const apiSubmitArticle = async (data: Article) => {
     }
 };
 
-const apiGet = async (endpoint: string) => {
+export const apiValidateToken = async (idToken: any): Promise<any> => {
+    try {
+        const res = await fetch(`${API_URL}/api/Account/validateToken`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
+            credentials: "include",
+        });
+        if (!res.ok) return null;
+        return res;
+    } catch (error) {
+        return false;
+    }
+};
+
+export const apiLogin = async (idToken: string) => {
+    try {
+        return await apiPost(`/api/Account/login`, { idToken: idToken });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const apiLogout = async () => {
+    try {
+        return await apiGet(`/api/Account/logout`);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const apiRegisterAccount = async (data: RegisterRequest) => {
+    try {
+        return await apiPost(`/api/Account/register`, data);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const apiGet = async (endpoint: string) => {
     try {
         const res = await fetch(`${API_URL}${endpoint}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -61,6 +104,7 @@ const apiPost = async (endpoint: string, data: any) => {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include",
             body: JSON.stringify(data),
         });
 
@@ -75,6 +119,8 @@ const apiDelete = async (endpoint: string) => {
     try {
         const res = await fetch(`${API_URL}${endpoint}`, {
             method: "DELETE",
+            headers: {},
+            credentials: "include",
         });
 
         return res;

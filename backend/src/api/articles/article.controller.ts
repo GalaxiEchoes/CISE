@@ -8,21 +8,23 @@ import {
     Param,
     Post,
     Put,
+    Query,
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { CreateArticleDto } from "./create-article.dto";
 import { error } from "console";
+import { Auth } from "src/auth/auth.decorator";
 
 @Controller("api/article")
 export class ArticleController {
     constructor(private readonly articleService: ArticleService) {}
 
     @Get("/test")
+    @Auth("admin, user")
     test() {
         return this.articleService.test();
     }
 
-    // Get all articles
     @Get("/")
     async findAll() {
         try {
@@ -39,7 +41,22 @@ export class ArticleController {
         }
     }
 
-    // Get one article via id
+    @Get("/search")
+    async search(@Query("query") query: string) {
+        try {
+            return this.articleService.search(query);
+        } catch {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    error: "No Articles found",
+                },
+                HttpStatus.NOT_FOUND,
+                { cause: error },
+            );
+        }
+    }
+
     @Get("/:id")
     async findOne(@Param("id") id: string) {
         try {
@@ -56,7 +73,6 @@ export class ArticleController {
         }
     }
 
-    // Create/add an Article
     @Post("/")
     async addArticle(@Body() createArticleDto: CreateArticleDto) {
         try {
@@ -74,7 +90,6 @@ export class ArticleController {
         }
     }
 
-    // Update an article
     @Put("/:id")
     async updateArticle(
         @Param("id") id: string,
@@ -95,7 +110,6 @@ export class ArticleController {
         }
     }
 
-    // Delete an article via id
     @Delete("/:id")
     async deleteArticle(@Param("id") id: string) {
         try {
