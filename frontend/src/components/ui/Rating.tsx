@@ -43,7 +43,7 @@ export const Rating: React.FC<{ currentUser: string }> = ({ currentUser }) => {
             })
             .then((json) => {
                 setArticle(json);
-                calculateStarCounts(article.ratings || []);
+                calculateStarCounts(json.ratings || []);
 
                 const currentUserRating = json.ratings.find(
                     (rating: UserRating) => rating.username === currentUser
@@ -55,7 +55,7 @@ export const Rating: React.FC<{ currentUser: string }> = ({ currentUser }) => {
             .catch((err) => {
                 console.log("Error from Rating: " + err);
             });
-    }, [id, currentUser, article.ratings]);
+    }, [id, currentUser]);
 
     function handleRating(newRating: number) {
         setUserRating(newRating);
@@ -75,21 +75,22 @@ export const Rating: React.FC<{ currentUser: string }> = ({ currentUser }) => {
         const averageRating = totalRating / updatedRatings.length;
     
         const updatedArticle = { ...article, ratings: updatedRatings, averageRating };
-        setArticle(updatedArticle);
-
+        
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedArticle),
         })
             .then((res) => {
-                router.push(`/articles/show/${id}`);
+                setArticle(updatedArticle);
+                calculateStarCounts(updatedRatings);
+                router.refresh();
             })
             .catch((err) => {
                 console.log("Error from Rating: " + err);
             });
 
-        calculateStarCounts(updatedRatings);
+        
     }
 
     const calculateBarWidth = (starCount: number, totalRatings: number): string => {
@@ -107,7 +108,8 @@ export const Rating: React.FC<{ currentUser: string }> = ({ currentUser }) => {
                     </span>
                 ))}
 
-                <p>{article.averageRating?.toFixed(1)} average based on {article.ratings?.length} reviews.</p>
+                <p>{article.averageRating?.toFixed(1)} average based on {article.ratings?.length} review
+                    {(article.ratings?.length || 0) > 1?'s':''}.</p>
                 
             </div>
 
