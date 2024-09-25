@@ -3,7 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { ContextTheme } from "@/contexts/ContextTheme";
 import { cn } from "@/lib/utils";
-import { Navbar } from "@/components/Navbar/Navbar";
+import { Sidebar } from "@/components/Navbar/Sidebar";
 
 const fontSans = FontSans({
     subsets: ["latin"],
@@ -20,6 +20,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+
     return (
         <html lang="en" suppressHydrationWarning>
             <body
@@ -34,8 +35,12 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <Navbar />
-                    <main className="mt-4">{children}</main>
+                    <div className = "sideNav">
+                        <Sidebar />
+                        <main className = "mainContent">
+                            {children}
+                        </main>
+                    </div>
                 </ContextTheme>
             </body>
         </html>
