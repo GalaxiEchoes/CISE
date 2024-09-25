@@ -22,7 +22,7 @@ export class AccountController {
     }
 
     @Post("/login")
-    async login(@Req() req: Request, @Res() res: Response): Promise<void> {
+    async login(@Req() req: Request, @Res() res: Response): Promise<any> {
         const idToken = req?.body?.idToken;
         const isValid = await this.service.validateToken(idToken);
 
@@ -35,6 +35,8 @@ export class AccountController {
                 secure: true,
             });
             res.status(200).json({ message: "Logged in" });
+
+            return { idToken };
         }
     }
 

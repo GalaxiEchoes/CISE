@@ -23,6 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     React.useEffect(() => {
         async function fetchAuthStatus() {
+            console.log("running from AuthContext.tsx");
             const res = await apiValidateToken("");
             setIsAuthenticated(await res.json());
             setIsLoading(false);

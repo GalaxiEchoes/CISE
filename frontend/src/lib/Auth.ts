@@ -25,6 +25,7 @@ export const loginService = async (req: LoginRequest): Promise<boolean> => {
         if (res.user) {
             const idToken = await res.user.getIdToken();
             await apiLogin(idToken);
+            localStorage.setItem("idToken", idToken);
             return true;
         }
     } catch (error) {}

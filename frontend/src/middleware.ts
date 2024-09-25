@@ -6,8 +6,10 @@ export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
     const isAuthenticated = await validateToken(req);
 
-    const accountPath = ["/account/login", "/account/register"];
-    const protectedPath = ["/articles/add"];
+    // const accountPath = ["/account/login", "/account/register"];
+    // const protectedPath = ["/articles/add"];
+    const accountPath = ["/x"];
+    const protectedPath = ["/xx"];
 
     req.nextUrl.searchParams.set("isAuthenticated", isAuthenticated.toString());
     // const user = {
