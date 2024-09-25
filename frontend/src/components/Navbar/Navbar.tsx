@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export const Navbar: React.FC = () => {
     return (
-        <nav>
+        <nav className="border-b-[1px] border-[#aaa] border-dotted pb-2">
             <ul className="flex items-center gap-4">
                 <li>
                     <Link href={"/"}>
@@ -21,6 +21,11 @@ export const Navbar: React.FC = () => {
                 </li>
                 <li>
                     <Theme />
+                </li>
+                <li className="ml-auto">
+                    <Link href={"/search"}>
+                        <Button>Search</Button>
+                    </Link>
                 </li>
             </ul>
         </nav>

@@ -34,7 +34,7 @@ export const apiSubmitArticle = async (data: Article) => {
     }
 };
 
-const apiGet = async (endpoint: string) => {
+export const apiGet = async (endpoint: string) => {
     try {
         const res = await fetch(`${API_URL}${endpoint}`, {
             method: "GET",
