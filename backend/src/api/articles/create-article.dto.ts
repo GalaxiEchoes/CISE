@@ -1,3 +1,5 @@
+import { UserRating } from "./user-rating";
+
 export class CreateArticleDto {
     title: string;
     authors: string;
@@ -6,4 +8,6 @@ export class CreateArticleDto {
     doi: string;
     claim: string;
     evidence: string;
+    ratings: UserRating[];
+    averageRating: number;
 }

@@ -9,6 +9,7 @@ import {
 } from "../ui/card";
 import Link from "next/link";
 import Image from "next/image";
+import {Rating} from "../ui/Rating";
 
 interface IProp {
     article?: Article;
@@ -30,6 +31,10 @@ export const ArticleCardDetails = ({ article }: IProp) => {
                 />
                 <CardTitle>{`${article.title}`}</CardTitle>
             </CardHeader>
+            <CardContent>
+                {/* Reminder: implement username or implement it in Rating */}
+                <Rating currentUser="Sammy"/>
+            </CardContent>
             <CardContent>
                 <ul>
                     <li>{`id: ${article?._id}`}</li>

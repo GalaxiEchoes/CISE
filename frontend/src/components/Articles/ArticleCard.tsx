@@ -2,6 +2,7 @@ import React from "react";
 import { Article } from "../../models/Articles";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { SimpleRating } from "../ui/SimpleRating";
 
 interface IProp {
     article?: Article;
@@ -21,6 +22,10 @@ const ArticleCard = ({ article }: IProp) => {
             <CardHeader>
                 <CardTitle>{`${article.title}`}</CardTitle>
             </CardHeader>
+            <CardContent>
+                {/* Reminder: implement username or implement it in simpleRating */}
+            <SimpleRating currentUser = "Sammy" currentArticle = {article}/>
+            </CardContent>
             <CardContent>
                 <ul>
                     <li>{`id: ${article?._id}`}</li>
