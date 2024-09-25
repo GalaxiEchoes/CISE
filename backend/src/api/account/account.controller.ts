@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Req, Res } from "@nestjs/common";
 import { AccountService } from "./account.service";
-import { NewUserDto } from "src/models/dto/newUser.dto";
+import { NewUserDto } from "../../models/dto/newUser.dto";
 import { Request, Response } from "express";
 
 @Controller("api/account")
