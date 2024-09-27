@@ -7,11 +7,14 @@ import React, {
 import { useParams, useRouter } from "next/navigation";
 import { UserRating, Article, DefaultEmptyArticle } from "../../models/Articles";
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { getAuth } from "firebase/auth";
 
-export const SimpleRating: React.FC<{ currentUser: string, currentArticle: Article}> = ({ currentUser, currentArticle }) => {
+export const SimpleRating: React.FC<{ currentArticle: Article}> = ({ currentArticle }) => {
     const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
     const router = useRouter();
     const [userRating, setUserRating] = useState(0);
+    const auth = getAuth();
+    const currentUser = auth.currentUser?.email || "Anonymous";
 
     useEffect(() => {
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${currentArticle._id}`)
@@ -34,41 +37,45 @@ export const SimpleRating: React.FC<{ currentUser: string, currentArticle: Artic
     }, [ currentUser, currentArticle._id]);
 
     function handleRating(newRating: number, event: React.MouseEvent) {
-        event.stopPropagation();
-        setUserRating(newRating);
+    event.stopPropagation();
+    setUserRating(newRating);
     
-        const updatedRatings = [...(article.ratings || [])];
-        const ratingIndex = updatedRatings.findIndex(
-            (r) => r.username === currentUser
-        );
-    
-        if (ratingIndex !== -1) {
-            updatedRatings[ratingIndex].rating = newRating;
-        } else {
-            updatedRatings.push({ username: currentUser, rating: newRating });
-        }
-    
-        const totalRating = updatedRatings.reduce((acc, curr) => acc + curr.rating, 0);
-        const averageRating = totalRating / updatedRatings.length;
-    
-        const updatedArticle = { ...article, ratings: updatedRatings, averageRating };
-        setArticle(updatedArticle);
+    // Clone existing ratings
+    const updatedRatings = [...(article.ratings || [])];
+    const ratingIndex = updatedRatings.findIndex(
+        (r) => r.username === currentUser
+    );
 
-        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${currentArticle._id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedArticle),
-        })
-            .then((res) => {
-                if(res.ok){
-                    console.log('Rating successfully saved!');
-                    router.refresh();
-                }
-            })
-            .catch((err) => {
-                console.log("Error from SimpleRating: " + err);
-            });
+    if (ratingIndex !== -1) {
+        updatedRatings[ratingIndex].rating = newRating; // Update existing rating
+    } else {
+        updatedRatings.push({ username: currentUser, rating: newRating }); // Add new rating
     }
+
+    // Calculate total and average rating
+    const totalRating = updatedRatings.reduce((acc, curr) => acc + curr.rating, 0);
+    const averageRating = totalRating / updatedRatings.length;
+
+    // Update article state
+    const updatedArticle = { ...article, ratings: updatedRatings, averageRating };
+    setArticle(updatedArticle);
+
+    // Send the updated article to the backend
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${currentArticle._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedArticle),
+    })
+        .then((res) => {
+            if (res.ok) {
+                console.log('Rating successfully saved!');
+                router.refresh();
+            }
+        })
+        .catch((err) => {
+            console.log("Error from SimpleRating: " + err);
+        });
+}
 
     return(
         <>
@@ -76,7 +83,7 @@ export const SimpleRating: React.FC<{ currentUser: string, currentArticle: Artic
             <div className="flex items-center gap-x-4">
                 {Array.from({ length: 5 }, (_, idx) => (
                     <span key={idx} onClick={(event) => handleRating(idx + 1, event)}>
-                        {idx < userRating ? <FaStar /> : <FaRegStar />}
+                        {idx < userRating ? <FaStar aria-label="filled-star"/> : <FaRegStar aria-label="empty-star"/>}
                     </span>
                 ))}
 
