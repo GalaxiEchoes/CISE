@@ -9,6 +9,7 @@ import {
     Post,
     Put,
     Query,
+    BadRequestException,
 } from "@nestjs/common";
 import { ArticleService } from "./article.service";
 import { CreateArticleDto } from "./create-article.dto";
@@ -17,7 +18,7 @@ import { Auth } from "../../auth/auth.decorator";
 
 @Controller("api/article")
 export class ArticleController {
-    constructor(private readonly articleService: ArticleService) {}
+    constructor(private readonly articleService: ArticleService) { }
 
     @Get("/test")
     @Auth("admin, user")
@@ -124,5 +125,21 @@ export class ArticleController {
                 { cause: error },
             );
         }
+    }
+
+    @Post("/submit")
+    async submitArticle(@Body() articleData) {
+        const { title, authors, journalName, year, volume, number, pages, doi } = articleData;
+
+        // Backend validation
+        if (!title || !authors || !journalName || !year || !doi) {
+            throw new BadRequestException('Missing required fields');
+        }
+
+        if (isNaN(year)) {
+            throw new BadRequestException('Year must be a number');
+        }
+
+        return this.articleService.submitArticle(articleData);
     }
 }
