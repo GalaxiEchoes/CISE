@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { ContextTheme } from "@/contexts/ContextTheme";
-import { AuthProvider } from "@/contexts/AuthContext";
+// import { AuthProvider } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "@/components/Navbar/Sidebar";
 
@@ -29,19 +29,19 @@ export default function RootLayout({
                     fontSans.variable,
                 )}
             >
-                <AuthProvider>
-                    <ContextTheme
-                        attribute="class"
-                        defaultTheme="system"
-                        enableSystem
-                        disableTransitionOnChange
-                    >
-                        <div className="sideNav">
-                            <Sidebar />
-                            <main className="mainContent">{children}</main>
-                        </div>
-                    </ContextTheme>
-                </AuthProvider>
+                {/* <AuthProvider> */}
+                <ContextTheme
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <div className="sideNav">
+                        <Sidebar />
+                        <main className="mainContent">{children}</main>
+                    </div>
+                </ContextTheme>
+                {/* </AuthProvider> */}
             </body>
         </html>
     );

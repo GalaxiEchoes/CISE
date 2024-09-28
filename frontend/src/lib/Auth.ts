@@ -1,5 +1,5 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { apiRegisterAccount, apiLogin, apiLogout } from "./Api";
+import { apiRegisterAccount, apiLogout } from "./Api";
 import { LoginRequest, RegisterRequest } from "@/models/AccountRequests";
 import {
     Auth,
@@ -7,6 +7,7 @@ import {
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
+import { userDataUtil } from "./utils";
 
 const app: FirebaseApp = initializeApp({
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,27 +18,6 @@ const app: FirebaseApp = initializeApp({
 });
 
 export const AUTH: Auth = getAuth(app);
-
-export const loginService = async (req: LoginRequest): Promise<boolean> => {
-    const { email, password } = req;
-    try {
-        const res = await signInWithEmailAndPassword(AUTH, email, password);
-        if (res.user) {
-            const idToken = await res.user.getIdToken();
-            await apiLogin(idToken);
-            localStorage.setItem("idToken", idToken);
-            return true;
-        }
-    } catch (error) {}
-    return false;
-};
-
-export const logoutService = async (): Promise<void> => {
-    try {
-        await signOut(AUTH);
-        await apiLogout();
-    } catch (error) {}
-};
 
 export const registerService = async (
     req: RegisterRequest,
@@ -50,4 +30,27 @@ export const registerService = async (
         return true;
     } catch (error) {}
     return false;
+};
+
+export const loginService = async (req: LoginRequest): Promise<boolean> => {
+    const { email, password } = req;
+    try {
+        const res = await signInWithEmailAndPassword(AUTH, email, password);
+        const userData = {
+            uid: res.user.uid,
+            email: res.user.email,
+            idToken: await res.user.getIdToken(),
+        };
+        userDataUtil.set(userData);
+        return true;
+    } catch (error) {}
+    return false;
+};
+
+export const logoutService = async (): Promise<void> => {
+    try {
+        await signOut(AUTH);
+        await apiLogout();
+        userDataUtil.remove();
+    } catch (error) {}
 };

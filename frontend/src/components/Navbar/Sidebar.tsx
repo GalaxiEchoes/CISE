@@ -41,16 +41,14 @@ export const Sidebar: React.FC = () => {
                                     <h2>Search Article</h2>
                                 </Link>
                             </li>
-                            <li>
-                                {isAuthenticated ? (
-                                    <LogoutButton />
-                                ) : (
-                                    <Button>
-                                        <Link href={"/account/login"}>
-                                            <h2>Login</h2>
-                                        </Link>
-                                    </Button>
-                                )}
+                            <li className="nav">
+                                <Link href={"/account/login"}>
+                                    <h2>Login</h2>
+                                </Link>
+                            </li>
+
+                            <li className="nav">
+                                <LogoutButton />
                             </li>
                             <li>
                                 <>

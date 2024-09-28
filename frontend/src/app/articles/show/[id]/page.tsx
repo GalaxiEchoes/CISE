@@ -1,5 +1,4 @@
 "use client";
-
 import ShowArticleDetails from "@/components/Articles/ShowArticleDetails";
 import { useParams } from "next/navigation";
 
