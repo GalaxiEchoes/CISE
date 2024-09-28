@@ -5,17 +5,16 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export const userDataUtil = {
-    set: (user: any) => {
-        localStorage.setItem("user", JSON.stringify(user));
+export const tokenUtil = {
+    set: (idToken: string) => {
+        localStorage.setItem("idToken", idToken);
     },
 
-    getToken: () => {
-        const user = localStorage.getItem("user");
-        return user ? JSON.parse(user).token : null;
+    get: () => {
+        return localStorage?.getItem("idToken");
     },
 
     remove: () => {
-        localStorage.removeItem("user");
+        localStorage.removeItem("idToken");
     },
 };

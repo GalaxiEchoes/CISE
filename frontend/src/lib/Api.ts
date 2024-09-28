@@ -1,10 +1,11 @@
 import { Article } from "@/models/Articles";
 import { RegisterRequest } from "@/models/AccountRequests";
+import { tokenUtil } from "./utils";
 
 const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
 
 /**
- * @Articles 
+ * @Articles
  */
 export const apiGetArticles = async () => {
     return await apiGet(`/api/Article`);
@@ -46,6 +47,7 @@ export const apiGet = async (endpoint: string) => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenUtil.get()}`,
             },
         });
 
@@ -66,6 +68,7 @@ const apiPost = async (endpoint: string, data: any) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenUtil.get()}`,
             },
             body: JSON.stringify(data),
         });
@@ -81,7 +84,9 @@ const apiDelete = async (endpoint: string) => {
     try {
         const res = await fetch(`${API_URL}${endpoint}`, {
             method: "DELETE",
-            headers: {},
+            headers: {
+                Authorization: `Bearer ${tokenUtil.get()}`,
+            },
         });
 
         return res;
