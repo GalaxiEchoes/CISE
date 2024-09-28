@@ -3,79 +3,43 @@ import { RegisterRequest } from "@/models/AccountRequests";
 
 const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
 
+/**
+ * @Articles 
+ */
 export const apiGetArticles = async () => {
-    try {
-        return await apiGet(`/api/Article`);
-    } catch (error) {
-        throw error;
-    }
+    return await apiGet(`/api/Article`);
 };
 
 export const apiGetArticleById = async (id: string) => {
-    try {
-        return await apiGet(`/api/Article/${id}`);
-    } catch (error) {
-        throw error;
-    }
+    return await apiGet(`/api/Article/${id}`);
 };
 
 export const apiDeleteArticleById = async (id: string) => {
-    try {
-        return await apiDelete(`/api/Article/${id}`);
-    } catch (error) {
-        throw error;
-    }
+    return await apiDelete(`/api/Article/${id}`);
 };
 
 export const apiSubmitArticle = async (data: Article) => {
-    try {
-        return await apiPost(`/api/Article`, data);
-    } catch (error) {
-        throw error;
-    }
+    return await apiPost(`/api/Article`, data);
 };
 
-export const apiValidateToken = async (idToken: any): Promise<any> => {
-    try {
-        const res = await fetch(`${API_URL}/api/Account/validateToken`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
-            },
-            credentials: "include",
-        });
-        if (!res.ok) return null;
-        return res;
-    } catch (error) {
-        return false;
-    }
-};
-
-export const apiLogin = async (idToken: string) => {
-    try {
-        return await apiPost(`/api/Account/login`, { idToken: idToken });
-    } catch (error) {
-        throw error;
-    }
+/**
+ * @Account
+ */
+export const apiRegisterAccount = async (data: RegisterRequest) => {
+    return await apiPost(`/api/Account/register`, data);
 };
 
 export const apiLogout = async () => {
-    try {
-        return await apiGet(`/api/Account/logout`);
-    } catch (error) {
-        throw error;
-    }
+    return await apiGet(`/api/Account/logout`);
 };
 
-export const apiRegisterAccount = async (data: RegisterRequest) => {
-    try {
-        return await apiPost(`/api/Account/register`, data);
-    } catch (error) {
-        throw error;
-    }
+export const apiValidateToken = async (idToken: any): Promise<any> => {
+    return await apiGet(`/api/Account/validateToken`);
 };
 
+/**
+ * @Base
+ */
 export const apiGet = async (endpoint: string) => {
     try {
         const res = await fetch(`${API_URL}${endpoint}`, {
@@ -83,7 +47,6 @@ export const apiGet = async (endpoint: string) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: "include",
         });
 
         if (!res.ok) {
@@ -104,7 +67,6 @@ const apiPost = async (endpoint: string, data: any) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: "include",
             body: JSON.stringify(data),
         });
 
@@ -120,7 +82,6 @@ const apiDelete = async (endpoint: string) => {
         const res = await fetch(`${API_URL}${endpoint}`, {
             method: "DELETE",
             headers: {},
-            credentials: "include",
         });
 
         return res;

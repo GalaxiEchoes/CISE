@@ -1,5 +1,3 @@
-"use client";
-
 import RegisterForm from "@/components/Account/RegisterForm";
 import {
     Card,

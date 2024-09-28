@@ -57,7 +57,7 @@ export default function LoginForm() {
             } else {
                 form.clearErrors();
                 router.push("/");
-                // window.location.reload();
+                router.refresh();
             }
         } catch (error) {}
     };
