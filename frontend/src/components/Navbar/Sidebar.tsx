@@ -6,14 +6,20 @@ import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
 import LogoutButton from "../Account/LogoutButton";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePathname } from "next/navigation";
 
 export const Sidebar: React.FC = () => {
     const { isAuthenticated } = useAuth();
     const [isOpen, setIsOpen] = useState(true);
+    const hideNavPaths = ["/account/login", "/account/register"];
+
+    const path = usePathname();
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+
+    if (hideNavPaths.includes(path)) return null;
 
     return (
         <>
@@ -41,19 +47,11 @@ export const Sidebar: React.FC = () => {
                                     <h2>Search Article</h2>
                                 </Link>
                             </li>
-                            <li className="nav">
-                                <Link href={"/account/login"}>
-                                    <h2>Login</h2>
-                                </Link>
-                            </li>
-
-                            <li className="nav">
-                                <LogoutButton />
+                            <li>
+                                <Theme />
                             </li>
                             <li>
-                                <>
-                                    <Theme />
-                                </>
+                                <LogoutButton />
                             </li>
                         </ul>
                     )}
@@ -108,7 +106,7 @@ export const Sidebar: React.FC = () => {
     );
 };
 
-const Theme: React.FC = () => {
+export const Theme: React.FC = () => {
     const { setTheme, theme } = useTheme();
 
     const toggleTheme = () => {
