@@ -75,7 +75,7 @@ export class ArticleController {
     async addArticle(@Body() createArticleDto: CreateArticleDto) {
         try {
             await this.articleService.create(createArticleDto);
-            return { message: "Article added successfully" };
+            return { message: "Article added successfully", success: true }; // Return message and success
         } catch {
             throw new HttpException(
                 {
