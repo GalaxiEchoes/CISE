@@ -20,12 +20,9 @@ import {
 
 const formSchema = z.object({
     title: z.string().min(1, "Title must be at least 1 character"),
-    author: z.string().min(1, "Author must be at least 1 character"),
+    authors: z.string().min(1, "Author must be at least 1 character"),
     source: z.string().min(1, "Source must be at least 1 character"),
-    pubyear: z
-        .string()
-        // .length(4, "Year must be exactly 4 digits")
-        .regex(/^\d{4}$/, "Year must be a valid 4-digit number"),
+    pubyear: z.string().regex(/^\d{4}$/, "Year must be a valid 4-digit number"),
     doi: z.string().min(1, "doi must be at least 1 characters"),
     claim: z.string().min(10, "Claim must be at least 10 characters"),
     evidence: z.string().min(10, "Evidence must be at least 10 characters"),
@@ -38,7 +35,7 @@ const SubmitArticle = () => {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
-            author: "",
+            authors: "",
             source: "",
             pubyear: "",
             doi: "",
@@ -49,7 +46,7 @@ const SubmitArticle = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         const title = values.title;
-        const authors = values.author;
+        const authors = values.authors;
         const source = values.source;
         const pubyear = values.pubyear;
         const doi = values.doi;
@@ -101,7 +98,7 @@ const SubmitArticle = () => {
                 />
                 <FormField
                     control={form.control}
-                    name="author"
+                    name="authors"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Author</FormLabel>

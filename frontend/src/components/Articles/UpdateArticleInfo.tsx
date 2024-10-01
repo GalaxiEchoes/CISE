@@ -1,174 +1,222 @@
 "use client";
-import React, {
-    useState,
-    useEffect,
-    ChangeEvent,
-    FormEvent,
-    ChangeEventHandler,
-} from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Article, DefaultEmptyArticle } from "../../models/Articles";
-import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@components/ui/button";
+import { Input } from "@components/ui/input";
+import { Textarea } from "@components/ui/textarea";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@components/ui/form";
 
-// make this a simple form, without having to update state on each change
+const formSchema = z.object({
+    title: z.string().min(1, "Title must be at least 1 character"),
+    authors: z.string().min(1, "Author must be at least 1 character"),
+    source: z.string().min(1, "Source must be at least 1 character"),
+    pubyear: z.string().regex(/^\d{4}$/, "Year must be a valid 4-digit number"),
+    doi: z.string().min(1, "doi must be at least 1 characters"),
+    claim: z.string().min(10, "Claim must be at least 10 characters"),
+    evidence: z.string().min(10, "Evidence must be at least 10 characters"),
+});
+
 function UpdateArticleInfo() {
-    const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
     const id = useParams<{ id: string }>().id;
+    const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
     const router = useRouter();
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            title: "",
+            authors: "",
+            source: "",
+            pubyear: "",
+            doi: "",
+            claim: "",
+            evidence: "",
+        },
+    });
 
     useEffect(() => {
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${id}`)
-            .then((res) => {
-                return res.json();
-            })
+            .then((res) => res.json())
             .then((json) => {
                 setArticle(json);
+                form.reset({
+                    title: json.title,
+                    authors: json.authors || "",
+                    source: json.source || "",
+                    pubyear: json.pubyear || "",
+                    doi: json.doi || "",
+                    claim: json.claim || "",
+                    evidence: json.evidence || "",
+                });
             })
             .catch((err) => {
                 console.log("Error from UpdateArticleInfo: " + err);
             });
-    }, [id]);
+    }, [id, form]);
 
-    const inputOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setArticle({ ...article, [event.target.name]: event.target.value });
+    const onCancel = () => {
+        form.clearErrors();
+        router.push(`/articles/show/${id}`);
+        router.refresh();
     };
 
-    const textAreaOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        setArticle({ ...article, [event.target.name]: event.target.value });
-    };
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        const title = values.title;
+        const authors = values.authors;
+        const source = values.source;
+        const pubyear = values.pubyear;
+        const doi = values.doi;
+        const claim = values.claim;
+        const evidence = values.evidence;
 
-    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(article),
-        })
-            .then((res) => {
+        const req: Article = {
+            title,
+            authors,
+            source,
+            pubyear,
+            doi,
+            claim,
+            evidence,
+        };
+
+        try {
+            const res = await fetch(
+                process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${id}`,
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(req),
+                },
+            );
+
+            const jsonResponse = await res.json();
+            const { success } = jsonResponse;
+
+            if (!success) {
+                form.setError("title", {
+                    type: "manual",
+                    message:
+                        "Edit unsuccessful. Please check the details entered.",
+                });
+            } else {
+                form.clearErrors();
                 router.push(`/articles/show/${id}`);
-            })
-            .catch((err) => {
-                console.log("Error from UpdateArticleInfo: " + err);
-            });
+                router.refresh();
+            }
+        } catch (error) {}
     };
 
     return (
-        <div className="UpdateArticleInfo">
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-8 m-auto">
-                        <br />
-                        <Link
-                            href="/"
-                            className="btn btn-outline-warning float-left"
-                        >
-                            Show Article List
-                        </Link>
-                    </div>
-                    <div className="col-md-8 m-auto">
-                        <h1 className="display-4 text-center">Edit Article</h1>
-                        <p className="lead text-center">
-                            Update Article&quot;s Info
-                        </p>
-                    </div>
-                </div>
-                <div className="col-md-8 m-auto">
-                    <form noValidate onSubmit={onSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="title">Title</label>
-                            <input
-                                type="text"
-                                placeholder="Title of the Article"
-                                name="title"
-                                className="form-control"
-                                value={article.title}
-                                onChange={inputOnChange}
-                            />
-                        </div>
-
-                        <br />
-                        <div className="form-group">
-                            <label htmlFor="author">Authors</label>
-                            <input
-                                type="text"
-                                placeholder="Authors"
-                                name="authors"
-                                className="form-control"
-                                value={article.authors}
-                                onChange={inputOnChange}
-                            />
-                        </div>
-                        <br />
-                        <div className="form-group">
-                            <label htmlFor="source">Source</label>
-                            <input
-                                type="text"
-                                placeholder="Source of the Article"
-                                name="source"
-                                className="form-control"
-                                value={article.source}
-                                onChange={inputOnChange}
-                            />
-                        </div>
-                        <br />
-                        <div className="form-group">
-                            <label htmlFor="pubyear">Publish Year</label>
-                            <input
-                                type="text"
-                                placeholder="Publish Year of the Article"
-                                name="pubyear"
-                                className="form-control"
-                                value={article.pubyear}
-                                onChange={inputOnChange}
-                            />
-                        </div>
-                        <br />
-                        <div className="form-group">
-                            <label htmlFor="doi">DOI</label>
-                            <input
-                                type="text"
-                                placeholder="DOI of the Article"
-                                name="doi"
-                                className="form-control"
-                                value={article.doi}
-                                onChange={inputOnChange}
-                            />
-                        </div>
-                        <br />
-                        <div className="form-group">
-                            <label htmlFor="claim">Claim</label>
-                            <input
-                                type="text"
-                                placeholder="Claim of the Article"
-                                name="claim"
-                                className="form-control"
-                                value={article.claim}
-                                onChange={inputOnChange}
-                            />
-                        </div>
-                        <br />
-                        <div className="form-group">
-                            <label htmlFor="evidence">Evidence</label>
-                            <input
-                                type="text"
-                                placeholder="Evidence of the Article"
-                                name="evidence"
-                                className="form-control"
-                                value={article.evidence}
-                                onChange={inputOnChange}
-                            />
-                        </div>
-                        <br />
-                        <button
-                            type="submit"
-                            className="btn btn-outline-info btn-lg btn-block"
-                        >
-                            Update Article
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Title</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Title" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="authors"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Author</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Author" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="source"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Source</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Source" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="pubyear"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Year</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Year" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="doi"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>DOI</FormLabel>
+                            <FormControl>
+                                <Input placeholder="DOI" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="claim"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Claim</FormLabel>
+                            <FormControl>
+                                <Textarea placeholder="Claim" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="evidence"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Evidence</FormLabel>
+                            <FormControl>
+                                <Textarea placeholder="Evidence" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button type="submit">Update</Button>
+                <Button type="button" variant={"outline"} onClick={onCancel}>
+                    Cancel
+                </Button>
+            </form>
+        </Form>
     );
 }
 export default UpdateArticleInfo;
