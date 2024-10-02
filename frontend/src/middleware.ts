@@ -2,7 +2,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const accountPath = ["/account/login", "/account/register"];
-const protectedPath = ["/", "/articles/add", "/search", "/articles/show/"];
+const protectedPath = [
+    "/",
+    "/articles/add",
+    "/search",
+    "/articles/show/",
+    "/moderator",
+    "/analyst",
+    "/admin",
+];
 
 export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
