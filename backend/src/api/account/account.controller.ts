@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Req } from "@nestjs/common";
 import { AccountService } from "./account.service";
 import { NewUserDto } from "../../models/dto/newUser.dto";
 import { Request } from "express";
-import { Auth } from "src/auth/auth.decorator";
-import { authorisation } from "src/auth/auth.service";
+import { Auth } from "../../auth/auth.decorator";
+import { authorisation } from "../../auth/auth.service";
 
 @Controller("api/account")
 export class AccountController {

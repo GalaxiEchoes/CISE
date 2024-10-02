@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { FirebaseAdmin } from "../../config/firebase.setup";
 import { NewUserDto } from "../../models/dto/newUser.dto";
 import { Permissions } from "../../models/auth.permissions";
-import { validateClaims } from "src/auth/auth.service";
+import { validateClaims } from "../../auth/auth.service";
 
 @Injectable()
 export class AccountService {
