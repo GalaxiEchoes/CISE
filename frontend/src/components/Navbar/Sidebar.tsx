@@ -48,6 +48,11 @@ export const Sidebar: React.FC = () => {
                                 </Link>
                             </li>
                             <li className="nav">
+                                <Link href={"/analyst"}>
+                                    <h2>Analyst Page</h2>
+                                </Link>
+                            </li>
+                            <li className="nav">
                                 <Link href={"/admin"}>
                                     <h2>Admin Page</h2>
                                 </Link>
