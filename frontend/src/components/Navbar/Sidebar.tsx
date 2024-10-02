@@ -52,6 +52,11 @@ export const Sidebar: React.FC = () => {
                                     <h2>Analyst Page</h2>
                                 </Link>
                             </li>
+                            <li className="nav">
+                                <Link href={"/moderator"}>
+                                    <h2>Moderator Page</h2>
+                                </Link>
+                            </li>
                             <li>
                                 <Theme />
                             </li>
