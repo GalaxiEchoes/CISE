@@ -27,7 +27,7 @@ export const ArticleCardDetails = ({ article }: IProp) => {
                     alt="Articles"
                     width="500"
                     height="500"
-                    className="h-auto w-[50%]"
+                    className="h-auto w-[30%]"
                     priority={true}
                 />
                 <CardTitle>{`${article.title}`}</CardTitle>
@@ -47,11 +47,9 @@ export const ArticleCardDetails = ({ article }: IProp) => {
                 </ul>
             </CardContent>
             <CardFooter>
-                <Button>
-                    <Link href={`/articles/edit/${article._id}`}>
-                        Edit Article
-                    </Link>
-                </Button>
+                <Link href={`/articles/edit/${article._id}`}>
+                    <Button>Edit Article</Button>
+                </Link>
             </CardFooter>
         </Card>
     );

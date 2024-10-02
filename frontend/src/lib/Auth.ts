@@ -1,5 +1,5 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { apiRegisterAccount, apiLogout } from "./Api";
+import { apiRegisterAccount, apiLogout, apiValidateAuthorisation } from "./Api";
 import { LoginRequest, RegisterRequest } from "@/models/AccountRequests";
 import {
     Auth,
@@ -57,4 +57,12 @@ export const logoutService = async (): Promise<void> => {
         await fetch("/api/cookie/rm-cookie", { cache: "no-cache" });
         tokenUtil.remove();
     } catch (error) {}
+};
+
+export const validateClaim = async (roles: string[]): Promise<boolean> => {
+    try {
+        const res = await apiValidateAuthorisation(roles);
+        return await res?.json();
+    } catch (error) {}
+    return false;
 };

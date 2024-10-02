@@ -38,8 +38,12 @@ export const apiLogout = async () => {
     return await apiGet(`/api/Account/logout`);
 };
 
-export const apiValidateToken = async (idToken: any): Promise<any> => {
+export const apiValidateToken = async (): Promise<any> => {
     return await apiGet(`/api/Account/validateToken`);
+};
+
+export const apiValidateAuthorisation = async (roles: any): Promise<any> => {
+    return await apiPost(`/api/Account/validateAuthorisation`, roles);
 };
 
 /**
