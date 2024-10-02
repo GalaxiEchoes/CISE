@@ -32,8 +32,7 @@ export const ArticleCardDetails = ({ article }: IProp) => {
                 <CardTitle>{`${article.title}`}</CardTitle>
             </CardHeader>
             <CardContent>
-                {/* Reminder: implement username or implement it in Rating */}
-                <Rating currentUser="Sammy"/>
+                <Rating />
             </CardContent>
             <CardContent>
                 <ul>
