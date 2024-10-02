@@ -47,6 +47,11 @@ export const Sidebar: React.FC = () => {
                                     <h2>Search Article</h2>
                                 </Link>
                             </li>
+                            <li className="nav">
+                                <Link href={"/analyst"}>
+                                    <h2>Analyst Page</h2>
+                                </Link>
+                            </li>
                             <li>
                                 <Theme />
                             </li>

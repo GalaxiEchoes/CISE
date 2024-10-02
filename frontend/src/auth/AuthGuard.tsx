@@ -16,6 +16,10 @@ export const AuthGuardAdmin: React.FC<AuthGuardRoleProps> = ({ children }) => {
     return <AuthGuard roles={authorisation.admin}>{children}</AuthGuard>;
 };
 
+export const AuthGuardAnalyst: React.FC<AuthGuardRoleProps> = ({ children }) => {
+    return <AuthGuard roles={authorisation.analyst}>{children}</AuthGuard>;
+};
+
 const AuthGuard: React.FC<AuthGuardProps> = ({ roles, children }) => {
     const [authorised, setAuthorised] = useState<boolean | null>(null); // null to handle loading state
     const [loading, setLoading] = useState<boolean>(true);
