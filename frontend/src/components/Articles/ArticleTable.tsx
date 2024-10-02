@@ -14,6 +14,9 @@ import {
 import {
   Info,
   CalendarDays,
+  MessageSquareText,
+  Link2,
+  Newspaper,
   BookUser,
   BookType,
   ArrowUpDown,
@@ -25,11 +28,24 @@ import {
 } from "lucide-react";
 import { Article } from "@/models/Articles";
 import { apiGetArticles } from "@/lib/Api";
+import { useRouter } from "next/navigation";
+import Select from "react-select";
 
 const ch = createColumnHelper<Article>();
 
+const columnOptions = [
+    { value: "title", label: "Title" },
+    { value: "authors", label: "Authors" },
+    { value: "source", label: "Source" },
+    { value: "pubyear", label: "Year" },
+    { value: "doi", label: "DOI" },
+    { value: "claim", label: "Claim" },
+    { value: "evidence", label: "Evidence" },
+  ];
+
 const columns = [
     ch.accessor("title", {
+        id: "title",
         cell: (info) => info.getValue(),
         header: () => (
           <span className="flex items-center">
@@ -39,6 +55,7 @@ const columns = [
     }),
 
     ch.accessor("authors", {
+        id: "authors",
         cell: (info) => info.getValue(),
         header: () => (
           <span className="flex items-center">
@@ -48,6 +65,7 @@ const columns = [
     }),
 
     ch.accessor("source", {
+        id: "source",
         cell: (info) => info.getValue(),
         header: () => (
           <span className="flex items-center">
@@ -57,6 +75,7 @@ const columns = [
     }),
 
     ch.accessor("pubyear", {
+        id: "pubyear",
         cell: (info) => info.getValue(),
         header: () => (
           <span className="flex items-center">
@@ -64,12 +83,55 @@ const columns = [
           </span>
         ),
     }),
+
+    ch.accessor("doi", {
+        id: "doi",
+        cell: (info) => info.getValue(),
+        header: () => (
+          <span className="flex items-center">
+            <Link2 className="mr-2" size={16} /> DOI
+          </span>
+        ),
+    }),
+
+    ch.accessor("claim", {
+        id: "claim",
+        cell: (info) => info.getValue(),
+        header: () => (
+          <span className="flex items-center">
+            <MessageSquareText className="mr-2" size={16} /> Claim
+          </span>
+        ),
+    }),
+
+    ch.accessor("evidence", {
+        id: "evidence",
+        cell: (info) => info.getValue(),
+        header: () => (
+          <span className="flex items-center">
+            <Newspaper className="mr-2" size={16} /> Evidence
+          </span>
+        ),
+    }),
 ]
 
 export default function ArticleTable() {
     const [articles, setArticles] = useState<Article[]>([]); 
-  const [sorting, setSorting] = useState<SortingState>([]);
+    const [sorting, setSorting] = useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = useState("");
+    const [selectedColumns, setSelectedColumns] = useState(columnOptions);
+    const router = useRouter();
+
+    const filteredColumns = columns.filter((col) =>
+        selectedColumns.some((option) => col.id === option.value)
+      );
+
+      console.log("Selected Columns: ", selectedColumns);
+console.log("Filtered Data: ", filteredColumns);
+
+    const handleClick = (_id: string) => {
+        router.push(`articles/show/${_id}`);
+    };
 
     useEffect(() => {
         const fetchArticles = async () => {
@@ -81,7 +143,6 @@ export default function ArticleTable() {
             } catch (error) {
               console.error("Error fetching articles:", error);
             }
-            
         };
     
         fetchArticles();
@@ -89,7 +150,7 @@ export default function ArticleTable() {
 
     const table = useReactTable({
         data: articles,
-        columns,
+        columns: filteredColumns,
         state: {
           sorting,
           globalFilter,
@@ -111,7 +172,7 @@ export default function ArticleTable() {
 
     return(
         <>
-      <div className="flex flex-col min-h-screen max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      <div className="overflow-x-auto flex flex-col min-h-screen max-w-3/4 mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="mb-4 flex items-center gap-4">
           <div className="relative flex-grow">
             <input
@@ -125,11 +186,15 @@ export default function ArticleTable() {
               size={20}
             />
           </div>
-
-            <button className="text-white bg-gray-800 px-3 py-2 rounded-md">
-                Search idk
-            </button>
-          
+        </div>
+        <div className="mb-4 flex items-center gap-4">
+            <Select
+                options={columnOptions}
+                isMulti
+                value={selectedColumns}
+                onChange={(newValue) => setSelectedColumns([...newValue] as { value: string; label: string; }[])}
+                placeholder="Select columns to display"
+            />
         </div>
 
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -163,7 +228,15 @@ export default function ArticleTable() {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-50">
+              <tr key={row.id} 
+                className="hover:bg-gray-50"
+                onClick={() => {
+                    const _id = row.original._id;
+                    if (_id) {
+                      handleClick(_id);
+                    }
+                  }}
+                >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
