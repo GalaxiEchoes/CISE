@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { apiValidateToken } from "@/lib/Api";
+import { apiValidateToken, apiValidateAuthorisation } from "@/lib/Api";
+import { tokenUtil } from "@/lib/utils";
+import { logoutService } from "@/lib/Auth";
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -24,16 +26,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     React.useEffect(() => {
         async function fetchAuthStatus() {
             console.log("running from AuthContext.tsx");
-            const res = await apiValidateToken("");
-            setIsAuthenticated(await res.json());
+            const res = await apiValidateToken();
+            const auth = await res?.json();
+            setIsAuthenticated(auth);
+            if (!auth) await logoutService();
             setIsLoading(false);
         }
         fetchAuthStatus();
     }, []);
 
+    const values = { isAuthenticated, isLoading };
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, isLoading }}>
-            {children}
-        </AuthContext.Provider>
+        <AuthContext.Provider value={values}>{children}</AuthContext.Provider>
     );
 };

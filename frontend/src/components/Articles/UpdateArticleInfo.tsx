@@ -16,6 +16,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@components/ui/form";
+import { apiUpdateArticle } from "@/lib/Api";
 
 const formSchema = z.object({
     title: z.string().min(1, "Title must be at least 1 character"),
@@ -91,16 +92,8 @@ function UpdateArticleInfo() {
         };
 
         try {
-            const res = await fetch(
-                process.env.NEXT_PUBLIC_BACKEND_URL + `/api/article/${id}`,
-                {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(req),
-                },
-            );
-
-            const jsonResponse = await res.json();
+            const res = await apiUpdateArticle(id, req);
+            const jsonResponse = await res?.json();
             const { success } = jsonResponse;
 
             if (!success) {
