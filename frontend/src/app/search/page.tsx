@@ -10,6 +10,7 @@ import {
     getCoreRowModel,
     flexRender,
 } from "@tanstack/react-table";
+import ArticleTable from '../../components/Articles/ArticleTable';
 
 const ch = createColumnHelper<Article>();
 
@@ -24,6 +25,7 @@ const columns = [
 ];
 
 export default function SearchPage() {
+    
     const [searchResults, setSearchResults] = React.useState<Article[]>([]);
     const [searchPhrase, setSearchPhrase] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
@@ -34,6 +36,7 @@ export default function SearchPage() {
         const res = await searchArticles(searchPhrase);
         setIsLoading(false);
         setSearchResults(res);
+        console.log(res);
     }
 
     const table = useReactTable({
@@ -43,6 +46,8 @@ export default function SearchPage() {
     });
 
     return (
+        <>
+        <ArticleTable/>
         <div className="px-10">
             <form className="mb-8 flex gap-2 pt-4" onSubmit={search}>
                 <input
@@ -105,5 +110,7 @@ export default function SearchPage() {
                 ""
             )}
         </div>
+        </>
+        
     );
 }
