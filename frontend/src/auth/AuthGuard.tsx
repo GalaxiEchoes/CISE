@@ -1,13 +1,22 @@
 "use client";
-import { validateClaim } from "@/lib/Auth";
 import React, { useState, useEffect } from "react";
+import { validateClaim } from "@/lib/Auth";
+import { authorisation } from "./AuthRoles";
 
 interface AuthGuardProps {
     children: React.ReactNode;
     roles: string[];
 }
 
-export const AuthGuard: React.FC<AuthGuardProps> = ({ roles, children }) => {
+interface AuthGuardRoleProps {
+    children: React.ReactNode;
+}
+
+export const AuthGuardAdmin: React.FC<AuthGuardRoleProps> = ({ children }) => {
+    return <AuthGuard roles={authorisation.admin}>{children}</AuthGuard>;
+};
+
+const AuthGuard: React.FC<AuthGuardProps> = ({ roles, children }) => {
     const [authorised, setAuthorised] = useState<boolean | null>(null); // null to handle loading state
     const [loading, setLoading] = useState<boolean>(true);
 

@@ -29,9 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const res = await apiValidateToken();
             const auth = await res?.json();
             setIsAuthenticated(auth);
-            if (!auth) {
-                await logoutService();
-            }
+            if (!auth) await logoutService();
             setIsLoading(false);
         }
         fetchAuthStatus();
