@@ -13,15 +13,12 @@ import {
 import { ArticleService } from "./article.service";
 import { CreateArticleDto } from "./create-article.dto";
 import { error } from "console";
+import { Auth } from "src/auth/auth.decorator";
+import { authorisation } from "src/auth/auth.service";
 
 @Controller("api/article")
 export class ArticleController {
     constructor(private readonly articleService: ArticleService) {}
-
-    @Get("/test")
-    test() {
-        return this.articleService.test();
-    }
 
     @Get("/")
     async findAll() {
@@ -89,6 +86,7 @@ export class ArticleController {
     }
 
     @Put("/:id")
+    @Auth(...authorisation.admin)
     async updateArticle(
         @Param("id") id: string,
         @Body() createArticleDto: CreateArticleDto,
@@ -109,6 +107,7 @@ export class ArticleController {
     }
 
     @Delete("/:id")
+    @Auth(...authorisation.admin)
     async deleteArticle(@Param("id") id: string) {
         try {
             return await await this.articleService.delete(id);

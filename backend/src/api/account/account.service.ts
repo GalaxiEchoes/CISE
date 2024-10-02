@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { FirebaseAdmin } from "../../config/firebase.setup";
 import { NewUserDto } from "../../models/dto/newUser.dto";
 import { Permissions } from "../../models/auth.permissions";
+import { validateClaims } from "src/auth/auth.util";
 
 @Injectable()
 export class AccountService {
@@ -39,12 +40,13 @@ export class AccountService {
         }
     }
 
-    async validateToken(idToken: string): Promise<boolean> {
+    async validateToken(
+        idToken: string,
+        permissions: string[],
+    ): Promise<boolean> {
         try {
             const app = this.admin.setup();
-            const decodedToken = await app.auth().verifyIdToken(idToken, true);
-            if (decodedToken) return true;
-            return false;
+            return validateClaims(app, idToken, permissions);
         } catch (error) {
             console.error("Error validating token:", error);
             return false;

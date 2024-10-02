@@ -1,11 +1,7 @@
-import {
-    Injectable,
-    CanActivate,
-    ExecutionContext,
-    UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { FirebaseAdmin } from "../config/firebase.setup";
+import { validateClaims } from "./auth.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,28 +13,8 @@ export class AuthGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const app = this.admin.setup();
         const request = context.switchToHttp().getRequest();
-        const idToken = request;
-        // let idToken = request?.cookies?.idToken;
-
-        // if (!idToken) {
-        //     const authHeader = request.headers["authorization"];
-        //     if (authHeader && authHeader.startsWith("Bearer ")) {
-        //         idToken = authHeader.split(" ")[1];
-        //     }
-        // }
-
-        const permissions = this.reflector.get<string[]>(
-            "permissions",
-            context.getHandler(),
-        );
-
-        try {
-            const claims = await app.auth().verifyIdToken(idToken, true);
-            if (permissions.includes(claims.role)) return true;
-            return false;
-        } catch (error) {
-            console.log("Error", error);
-            throw new UnauthorizedException();
-        }
+        const idToken = request?.headers?.authorization?.split(" ")[1];
+        const permissions = this.reflector.get<string[]>("permissions", context.getHandler());
+        return validateClaims(app, idToken, permissions);
     }
 }

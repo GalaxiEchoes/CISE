@@ -21,6 +21,7 @@ export class AccountController {
     @Get("/validateToken")
     async validateToken(@Req() req: Request): Promise<boolean> {
         const idToken = req?.headers?.authorization?.split(" ")[1];
-        return this.service.validateToken(idToken);
+        const permissions = ["admin"];
+        return this.service.validateToken(idToken, permissions);
     }
 }
