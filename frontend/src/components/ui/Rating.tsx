@@ -7,14 +7,18 @@ import React, {
 import { useParams, useRouter } from "next/navigation";
 import { UserRating, Article, DefaultEmptyArticle } from "../../models/Articles";
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { getAuth } from "firebase/auth";
 
-export const Rating: React.FC<{ currentUser: string }> = ({ currentUser }) => {
+export const Rating: React.FC<{}> = () => {
     const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
     const id = useParams<{ id: string }>().id;
     const router = useRouter();
 
     const [userRating, setUserRating] = useState(0);
     const [starCounts, setStarCounts] = useState({ one: 0, two: 0, three: 0, four: 0, five: 0 });
+    const auth = getAuth();
+    const currentUser = auth.currentUser?.email || "Anonymous";
+
 
     const calculateStarCounts = (ratings: UserRating[]) => {
         const counts = {

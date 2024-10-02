@@ -23,8 +23,7 @@ const ArticleCard = ({ article }: IProp) => {
                 <CardTitle>{`${article.title}`}</CardTitle>
             </CardHeader>
             <CardContent>
-                {/* Reminder: implement username or implement it in simpleRating */}
-            <SimpleRating currentUser = "Sammy" currentArticle = {article}/>
+            <SimpleRating currentArticle = {article}/>
             </CardContent>
             <CardContent>
                 <ul>
