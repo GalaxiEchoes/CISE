@@ -1,25 +1,25 @@
 "use client";
-
 import Link from "next/link";
 import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
 import LogoutButton from "../Account/LogoutButton";
-import { useAuth } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
 
 export const Sidebar: React.FC = () => {
-    const { isAuthenticated } = useAuth();
-    const [isOpen, setIsOpen] = useState(true);
-    const hideNavPaths = ["/account/login", "/account/register"];
-
     const path = usePathname();
+    const [isOpen, setIsOpen] = useState(true);
+
+    const paths = ["/", "/search", "/moderator", "/analyst", "/admin"];
+    const prefix = ["/articles/"];
+
+    if (!paths.includes(path) && !prefix.some((x) => path.startsWith(x))) {
+        return null;
+    }
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
-
-    if (hideNavPaths.includes(path)) return null;
 
     return (
         <>
