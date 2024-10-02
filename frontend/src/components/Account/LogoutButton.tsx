@@ -2,7 +2,6 @@
 import { logoutService } from "@/lib/Auth";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { BsWindowSidebar } from "react-icons/bs";
 
 export default function LogoutButton() {
     const router = useRouter();
