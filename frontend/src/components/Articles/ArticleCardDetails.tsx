@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import {Rating} from "../ui/Rating";
+import { Button } from "../ui/button";
 
 interface IProp {
     article?: Article;
@@ -46,7 +47,11 @@ export const ArticleCardDetails = ({ article }: IProp) => {
                 </ul>
             </CardContent>
             <CardFooter>
-                <Link href={`/articles/edit/${article._id}`}>Edit Article</Link>
+                <Button>
+                    <Link href={`/articles/edit/${article._id}`}>
+                        Edit Article
+                    </Link>
+                </Button>
             </CardFooter>
         </Card>
     );

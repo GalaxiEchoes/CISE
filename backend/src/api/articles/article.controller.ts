@@ -95,7 +95,7 @@ export class ArticleController {
     ) {
         try {
             await this.articleService.update(id, createArticleDto);
-            return { message: "Article updated successfully" };
+            return { message: "Article updated successfully", success: true }; // Return message and success
         } catch {
             throw new HttpException(
                 {
