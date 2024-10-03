@@ -86,7 +86,6 @@ export class ArticleController {
     }
 
     @Put("/:id")
-    @Auth(...authorisation.admin)
     async updateArticle(
         @Param("id") id: string,
         @Body() createArticleDto: CreateArticleDto,
