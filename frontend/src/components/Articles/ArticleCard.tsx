@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Article } from "../../models/Articles";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,7 @@ const ArticleCard = ({ article }: IProp) => {
                 <CardTitle>{`${article.title}`}</CardTitle>
             </CardHeader>
             <CardContent>
-            <SimpleRating currentArticle = {article}/>
+                <SimpleRating currentArticle={article} />
             </CardContent>
             <CardContent>
                 <ul>

@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AuthGuardAdmin } from "@/auth/AuthGuard";
+import ShowArticlesList from "@/components/Articles/ShowArticleList";
+import { ArticleAdminCard } from "@/components/Articles/ArticleAdminCard";
 
 export default function AdminPage() {
     return (
@@ -9,7 +11,7 @@ export default function AdminPage() {
                     <CardTitle>Admin Page</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>Admin Table</p>
+                    <ShowArticlesList CardComponent={ArticleAdminCard} />
                 </CardContent>
             </Card>
         </AuthGuardAdmin>

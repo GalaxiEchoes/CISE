@@ -1,11 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import ArticleCard from "./ArticleCard";
+import React, { useState, useEffect, ReactNode } from "react";
 import { Article } from "../../models/Articles";
 import { apiGetArticles } from "@/lib/Api";
 
-function ShowArticlesList() {
-    const [articles, setArticles] = useState<[Article?]>([]);
+interface ShowArticlesListProps {
+    CardComponent: (props: { article: Article }) => ReactNode;
+}
+
+function ShowArticlesList({ CardComponent }: ShowArticlesListProps) {
+    const [articles, setArticles] = useState<Article[]>([]);
 
     useEffect(() => {
         const getArticles = async () => {
@@ -20,9 +23,10 @@ function ShowArticlesList() {
     return (
         <>
             {articles?.map((article) => (
-                <ArticleCard article={article} key={article?._id} />
+                <CardComponent article={article} key={article?._id} />
             ))}
         </>
     );
 }
+
 export default ShowArticlesList;

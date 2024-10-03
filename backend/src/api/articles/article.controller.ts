@@ -110,7 +110,7 @@ export class ArticleController {
     @Auth(...authorisation.admin)
     async deleteArticle(@Param("id") id: string) {
         try {
-            return await await this.articleService.delete(id);
+            return await this.articleService.delete(id);
         } catch {
             throw new HttpException(
                 {
