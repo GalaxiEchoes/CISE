@@ -5,10 +5,12 @@ import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
 import LogoutButton from "../Account/LogoutButton";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "../Account/ThemeToggle";
 
 export const Sidebar: React.FC = () => {
     const path = usePathname();
     const [isOpen, setIsOpen] = useState(true);
+    const displayName = localStorage.getItem("displayName");
 
     const paths = ["/", "/search", "/moderator", "/analyst", "/admin"];
     const prefix = ["/articles/"];
@@ -37,6 +39,9 @@ export const Sidebar: React.FC = () => {
                                     <h1>SPEED APP</h1>
                                 </Link>
                             </li>
+                            <li className="pb-2">
+                                <ThemeToggle />
+                            </li>
                             <li className="nav">
                                 <Link href={"/articles/add"}>
                                     <h2>Submit Article</h2>
@@ -62,10 +67,10 @@ export const Sidebar: React.FC = () => {
                                     <h2>Admin Page</h2>
                                 </Link>
                             </li>
-                            <li>
-                                <Theme />
+                            <li className="pt-10">
+                                <p className="font-bold">{displayName}</p>
                             </li>
-                            <li>
+                            <li className="pt-4">
                                 <LogoutButton />
                             </li>
                         </ul>
@@ -121,13 +126,13 @@ export const Sidebar: React.FC = () => {
     );
 };
 
-export const Theme: React.FC = () => {
-    const { setTheme, theme } = useTheme();
+// export const Theme: React.FC = () => {
+//     const { setTheme, theme } = useTheme();
 
-    const toggleTheme = () => {
-        if (theme === "light") setTheme("dark");
-        else setTheme("light");
-    };
+//     const toggleTheme = () => {
+//         if (theme === "light") setTheme("dark");
+//         else setTheme("light");
+//     };
 
-    return <Button onClick={toggleTheme}>Toggle Theme</Button>;
-};
+//     return <Button onClick={toggleTheme}>Toggle Theme</Button>;
+// };

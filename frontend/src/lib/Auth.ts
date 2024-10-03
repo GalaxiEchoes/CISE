@@ -37,6 +37,7 @@ export const loginService = async (req: LoginRequest): Promise<boolean> => {
     try {
         const res = await signInWithEmailAndPassword(AUTH, email, password);
         const idToken = await res.user.getIdToken();
+        const displayName = res?.user?.displayName ?? "";
 
         await fetch("/api/cookie/set-cookie", {
             method: "POST",
@@ -45,6 +46,7 @@ export const loginService = async (req: LoginRequest): Promise<boolean> => {
         });
 
         tokenUtil.set(idToken);
+        localStorage.setItem("displayName", displayName);
         return true;
     } catch (error) {}
     return false;
@@ -56,6 +58,7 @@ export const logoutService = async (): Promise<void> => {
         await apiLogout();
         await fetch("/api/cookie/rm-cookie", { cache: "no-cache" });
         tokenUtil.remove();
+        localStorage.removeItem("displayName");
     } catch (error) {}
 };
 

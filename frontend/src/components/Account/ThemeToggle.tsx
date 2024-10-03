@@ -12,7 +12,7 @@ export const ThemeToggle: React.FC = () => {
     };
 
     return (
-        <Button onClick={toggleTheme} variant={"outline"} size={"icon"}>
+        <Button onClick={toggleTheme} size={"icon"} variant={"secondary"}>
             {theme === "light" ? <Sun /> : <Moon />}
         </Button>
     );
