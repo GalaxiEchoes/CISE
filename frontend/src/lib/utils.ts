@@ -18,3 +18,17 @@ export const tokenUtil = {
         localStorage.removeItem("idToken");
     },
 };
+
+export const userUtil = {
+    set: (displayName: string) => {
+        localStorage.setItem("displayName", displayName);
+    },
+
+    get: () => {
+        return localStorage?.getItem("displayName");
+    },
+
+    remove: () => {
+        localStorage.removeItem("displayName");
+    },
+};

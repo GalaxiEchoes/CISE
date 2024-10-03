@@ -7,7 +7,7 @@ import {
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
-import { tokenUtil } from "./utils";
+import { tokenUtil, userUtil } from "./utils";
 
 const app: FirebaseApp = initializeApp({
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -46,7 +46,7 @@ export const loginService = async (req: LoginRequest): Promise<boolean> => {
         });
 
         tokenUtil.set(idToken);
-        localStorage.setItem("displayName", displayName);
+        userUtil.set(displayName);
         return true;
     } catch (error) {}
     return false;
@@ -58,7 +58,7 @@ export const logoutService = async (): Promise<void> => {
         await apiLogout();
         await fetch("/api/cookie/rm-cookie", { cache: "no-cache" });
         tokenUtil.remove();
-        localStorage.removeItem("displayName");
+        userUtil.remove();
     } catch (error) {}
 };
 

@@ -1,16 +1,20 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useTheme } from "next-themes";
-import { Button } from "../ui/button";
 import LogoutButton from "../Account/LogoutButton";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "../Account/ThemeToggle";
+import { userUtil } from "@/lib/utils";
 
 export const Sidebar: React.FC = () => {
     const path = usePathname();
+    const [displayName, setDisplayName] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(true);
-    const displayName = localStorage.getItem("displayName");
+
+    React.useEffect(() => {
+        const user = userUtil?.get() ?? "";
+        setDisplayName(user);
+    }, []);
 
     const paths = ["/", "/search", "/moderator", "/analyst", "/admin"];
     const prefix = ["/articles/"];
@@ -68,7 +72,7 @@ export const Sidebar: React.FC = () => {
                                 </Link>
                             </li>
                             <li className="pt-10">
-                                <p className="font-bold">{displayName}</p>
+                                <p className="font-bold">{`${displayName}`}</p>
                             </li>
                             <li className="pt-4">
                                 <LogoutButton />
@@ -125,14 +129,3 @@ export const Sidebar: React.FC = () => {
         </>
     );
 };
-
-// export const Theme: React.FC = () => {
-//     const { setTheme, theme } = useTheme();
-
-//     const toggleTheme = () => {
-//         if (theme === "light") setTheme("dark");
-//         else setTheme("light");
-//     };
-
-//     return <Button onClick={toggleTheme}>Toggle Theme</Button>;
-// };
