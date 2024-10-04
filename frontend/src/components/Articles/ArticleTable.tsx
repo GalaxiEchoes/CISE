@@ -188,6 +188,7 @@ console.log("Filtered Data: ", filteredColumns);
           </div>
         </div>
         <div className="mb-4 flex items-center gap-4">
+          <h1>Selected Columns: </h1>
             <Select
                 options={columnOptions}
                 isMulti
