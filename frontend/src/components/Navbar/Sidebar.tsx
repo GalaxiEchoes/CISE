@@ -1,25 +1,31 @@
 "use client";
-
 import Link from "next/link";
 import React, { useState } from "react";
-import { useTheme } from "next-themes";
-import { Button } from "../ui/button";
 import LogoutButton from "../Account/LogoutButton";
-import { useAuth } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "../Account/ThemeToggle";
+import { userUtil } from "@/lib/utils";
 
 export const Sidebar: React.FC = () => {
-    const { isAuthenticated } = useAuth();
-    const [isOpen, setIsOpen] = useState(true);
-    const hideNavPaths = ["/account/login", "/account/register"];
-
     const path = usePathname();
+    const [displayName, setDisplayName] = useState<string | null>(null);
+    const [isOpen, setIsOpen] = useState(true);
+
+    React.useEffect(() => {
+        const user = userUtil?.get() ?? "";
+        setDisplayName(user);
+    }, []);
+
+    const paths = ["/", "/search", "/moderator", "/analyst", "/admin"];
+    const prefix = ["/articles/"];
+
+    if (!paths.includes(path) && !prefix.some((x) => path.startsWith(x))) {
+        return null;
+    }
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
-
-    if (hideNavPaths.includes(path)) return null;
 
     return (
         <>
@@ -37,6 +43,9 @@ export const Sidebar: React.FC = () => {
                                     <h1>SPEED APP</h1>
                                 </Link>
                             </li>
+                            <li className="pb-2">
+                                <ThemeToggle />
+                            </li>
                             <li className="nav">
                                 <Link href={"/articles/add"}>
                                     <h2>Submit Article</h2>
@@ -47,10 +56,25 @@ export const Sidebar: React.FC = () => {
                                     <h2>Search Article</h2>
                                 </Link>
                             </li>
-                            <li>
-                                <Theme />
+                            <li className="nav">
+                                <Link href={"/moderator"}>
+                                    <h2>Moderator Page</h2>
+                                </Link>
                             </li>
-                            <li>
+                            <li className="nav">
+                                <Link href={"/analyst"}>
+                                    <h2>Analyst Page</h2>
+                                </Link>
+                            </li>
+                            <li className="nav">
+                                <Link href={"/admin"}>
+                                    <h2>Admin Page</h2>
+                                </Link>
+                            </li>
+                            <li className="pt-10">
+                                <p className="font-bold">{`${displayName}`}</p>
+                            </li>
+                            <li className="pt-4">
                                 <LogoutButton />
                             </li>
                         </ul>
@@ -104,15 +128,4 @@ export const Sidebar: React.FC = () => {
             </button>
         </>
     );
-};
-
-export const Theme: React.FC = () => {
-    const { setTheme, theme } = useTheme();
-
-    const toggleTheme = () => {
-        if (theme === "light") setTheme("dark");
-        else setTheme("light");
-    };
-
-    return <Button onClick={toggleTheme}>Toggle Theme</Button>;
 };

@@ -23,6 +23,10 @@ export const apiSubmitArticle = async (data: Article) => {
     return await apiPost(`/api/Article`, data);
 };
 
+export const apiUpdateArticle = async (id: string, data: Article) => {
+    return await apiPut(`/api/Article/${id}`, data);
+};
+
 /**
  * @Account
  */
@@ -34,8 +38,12 @@ export const apiLogout = async () => {
     return await apiGet(`/api/Account/logout`);
 };
 
-export const apiValidateToken = async (idToken: any): Promise<any> => {
+export const apiValidateToken = async (): Promise<any> => {
     return await apiGet(`/api/Account/validateToken`);
+};
+
+export const apiValidateAuthorisation = async (roles: any): Promise<any> => {
+    return await apiPost(`/api/Account/validateAuthorisation`, roles);
 };
 
 /**
@@ -73,6 +81,23 @@ const apiPost = async (endpoint: string, data: any) => {
             body: JSON.stringify(data),
         });
 
+        return res;
+    } catch (error) {
+        // handle properly someday
+        console.error(error);
+    }
+};
+
+const apiPut = async (endpoint: string, data: any) => {
+    try {
+        const res = await fetch(`${API_URL}${endpoint}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenUtil.get()}`,
+            },
+            body: JSON.stringify(data),
+        });
         return res;
     } catch (error) {
         // handle properly someday

@@ -1,5 +1,5 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { apiRegisterAccount, apiLogout } from "./Api";
+import { apiRegisterAccount, apiLogout, apiValidateAuthorisation } from "./Api";
 import { LoginRequest, RegisterRequest } from "@/models/AccountRequests";
 import {
     Auth,
@@ -7,7 +7,7 @@ import {
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
-import { tokenUtil } from "./utils";
+import { tokenUtil, userUtil } from "./utils";
 
 const app: FirebaseApp = initializeApp({
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -37,6 +37,7 @@ export const loginService = async (req: LoginRequest): Promise<boolean> => {
     try {
         const res = await signInWithEmailAndPassword(AUTH, email, password);
         const idToken = await res.user.getIdToken();
+        const displayName = res?.user?.displayName ?? "";
 
         await fetch("/api/cookie/set-cookie", {
             method: "POST",
@@ -45,6 +46,7 @@ export const loginService = async (req: LoginRequest): Promise<boolean> => {
         });
 
         tokenUtil.set(idToken);
+        userUtil.set(displayName);
         return true;
     } catch (error) {}
     return false;
@@ -56,5 +58,14 @@ export const logoutService = async (): Promise<void> => {
         await apiLogout();
         await fetch("/api/cookie/rm-cookie", { cache: "no-cache" });
         tokenUtil.remove();
+        userUtil.remove();
     } catch (error) {}
+};
+
+export const validateClaim = async (roles: string[]): Promise<boolean> => {
+    try {
+        const res = await apiValidateAuthorisation(roles);
+        return await res?.json();
+    } catch (error) {}
+    return false;
 };
