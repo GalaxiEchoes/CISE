@@ -1,4 +1,5 @@
 import { AuthGuardModerator } from "@/auth/AuthGuard";
+import ModeratorTable from "@/components/Articles/moderator/ModeratorTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ModeratorPage() {
@@ -9,7 +10,7 @@ export default function ModeratorPage() {
                     <CardTitle>Moderator Page</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>Moderator Table</p>
+                    <ModeratorTable />
                 </CardContent>
             </Card>
         </AuthGuardModerator>

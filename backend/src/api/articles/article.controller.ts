@@ -52,6 +52,23 @@ export class ArticleController {
         }
     }
 
+    @Get("/moderator")
+    @Auth(...authorisation.moderator)
+    async getModeratorArticles() {
+        try {
+            return this.articleService.listAllModerator();
+        } catch {
+            throw new HttpException(
+                {
+                    status: HttpStatus.NOT_FOUND,
+                    error: "No Articles found",
+                },
+                HttpStatus.NOT_FOUND,
+                { cause: error },
+            );
+        }
+    }
+
     @Get("/:id")
     async findOne(@Param("id") id: string) {
         try {

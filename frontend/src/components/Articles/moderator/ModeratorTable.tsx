@@ -1,34 +1,34 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { apiGetModeratorArticles } from "../../../lib/Api";
+import { Article } from "../../../models/Articles";
 import {
     createColumnHelper,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getSortedRowModel,
-    useReactTable,
     getPaginationRowModel,
+    getSortedRowModel,
     SortingState,
+    useReactTable,
 } from "@tanstack/react-table";
 import {
-    Info,
-    CalendarDays,
-    MessageSquareText,
-    Link2,
-    Newspaper,
-    BookUser,
-    BookType,
     ArrowUpDown,
-    Search,
-    ChevronsLeft,
+    BookType,
+    BookUser,
+    CalendarDays,
     ChevronLeft,
     ChevronRight,
+    ChevronsLeft,
     ChevronsRight,
+    Info,
+    Link2,
+    MessageSquareText,
+    Newspaper,
+    Search,
 } from "lucide-react";
-import { Article } from "@/models/Articles";
-import { apiGetArticles } from "@/lib/Api";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 
 const ch = createColumnHelper<Article>();
@@ -115,10 +115,9 @@ const columns = [
     }),
 ];
 
-export default function ArticleTable() {
+export default function ModeratorTable() {
     const [articles, setArticles] = useState<Article[]>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [globalFilter, setGlobalFilter] = useState("");
     const [selectedColumns, setSelectedColumns] = useState(columnOptions);
     const router = useRouter();
 
@@ -131,26 +130,23 @@ export default function ArticleTable() {
     };
 
     useEffect(() => {
-        const fetchArticles = async () => {
+        (async () => {
             try {
-                const res = await apiGetArticles();
+                const res = await apiGetModeratorArticles();
                 if (res?.ok) {
                     setArticles(await res?.json());
                 }
             } catch (error) {
                 console.error("Error fetching articles:", error);
             }
-        };
-
-        fetchArticles();
-    }, [globalFilter]);
+        })();
+    }, []);
 
     const table = useReactTable({
         data: articles,
         columns: filteredColumns,
         state: {
             sorting,
-            globalFilter,
         },
         initialState: {
             pagination: {
@@ -163,27 +159,12 @@ export default function ArticleTable() {
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
 
-        onGlobalFilterChange: setGlobalFilter,
         getFilteredRowModel: getFilteredRowModel(),
     });
 
     return (
         <>
             <div className="max-w-3/4 mx-auto flex min-h-screen flex-col overflow-x-auto px-4 py-12 sm:px-6 lg:px-8">
-                <div className="mb-4 flex items-center gap-4">
-                    <div className="relative flex-grow">
-                        <input
-                            value={globalFilter ?? ""}
-                            onChange={(e) => setGlobalFilter(e.target.value)}
-                            placeholder="Search..."
-                            className="box-size-border w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        />
-                        <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400"
-                            size={20}
-                        />
-                    </div>
-                </div>
                 <div className="mb-4 flex items-center gap-4">
                     <h1>Selected Columns: </h1>
                     <Select

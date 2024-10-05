@@ -20,6 +20,14 @@ export class ArticleService {
             .exec();
     }
 
+    async listAllModerator(): Promise<Article[]> {
+        return await this.articleModel
+            .find({
+                status: "awaiting",
+            })
+            .exec();
+    }
+
     async findOne(id: string): Promise<Article> {
         return await this.articleModel.findById(id).exec();
     }

@@ -46,6 +46,10 @@ export const apiValidateAuthorisation = async (roles: any): Promise<any> => {
     return await apiPost(`/api/Account/validateAuthorisation`, roles);
 };
 
+export const apiGetModeratorArticles = async () => {
+    return await apiGet(`/api/Article/moderator`);
+};
+
 /**
  * @Base
  */
