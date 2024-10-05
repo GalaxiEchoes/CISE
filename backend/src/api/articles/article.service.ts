@@ -29,7 +29,10 @@ export class ArticleService {
     }
 
     async create(createArticleDto: CreateArticleDto) {
-        return await this.articleModel.create(createArticleDto);
+        return await this.articleModel.create({
+            ...createArticleDto,
+            status: "awaiting",
+        });
     }
 
     async update(id: string, createArticleDto: CreateArticleDto) {
