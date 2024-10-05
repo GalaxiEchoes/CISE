@@ -23,7 +23,7 @@ export class ArticleController {
     @Get("/")
     async findAll() {
         try {
-            return this.articleService.findAll();
+            return this.articleService.listAllPublic();
         } catch {
             throw new HttpException(
                 {

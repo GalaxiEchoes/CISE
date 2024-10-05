@@ -12,8 +12,12 @@ export class ArticleService {
         return "article route testing";
     }
 
-    async findAll(): Promise<Article[]> {
-        return await this.articleModel.find().exec();
+    async listAllPublic(): Promise<Article[]> {
+        return await this.articleModel
+            .find({
+                status: "approved",
+            })
+            .exec();
     }
 
     async findOne(id: string): Promise<Article> {
