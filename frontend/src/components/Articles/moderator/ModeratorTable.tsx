@@ -29,7 +29,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Select from "react-select";
 
 const ch = createColumnHelper<Article>();
 
@@ -113,17 +112,25 @@ const columns = [
             </span>
         ),
     }),
+
+    ch.accessor("status", {
+        id: "status",
+        cell: (info) => {
+            console.log(info.getValue());
+            return info.getValue();
+        },
+        header: () => (
+            <span className="flex items-center">
+                <Search className="mr-2" size={16} /> Status
+            </span>
+        ),
+    }),
 ];
 
 export default function ModeratorTable() {
     const [articles, setArticles] = useState<Article[]>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [selectedColumns, setSelectedColumns] = useState(columnOptions);
     const router = useRouter();
-
-    const filteredColumns = columns.filter((col) =>
-        selectedColumns.some((option) => col.id === option.value),
-    );
 
     const handleClick = (_id: string) => {
         router.push(`articles/show/${_id}`);
@@ -144,7 +151,7 @@ export default function ModeratorTable() {
 
     const table = useReactTable({
         data: articles,
-        columns: filteredColumns,
+        columns,
         state: {
             sorting,
         },
@@ -165,22 +172,6 @@ export default function ModeratorTable() {
     return (
         <>
             <div className="max-w-3/4 mx-auto flex min-h-screen flex-col overflow-x-auto px-4 py-12 sm:px-6 lg:px-8">
-                <div className="mb-4 flex items-center gap-4">
-                    <h1>Selected Columns: </h1>
-                    <Select
-                        options={columnOptions}
-                        isMulti
-                        value={selectedColumns}
-                        onChange={(newValue) =>
-                            setSelectedColumns([...newValue] as {
-                                value: string;
-                                label: string;
-                            }[])
-                        }
-                        placeholder="Select columns to display"
-                    />
-                </div>
-
                 <div className="overflow-x-auto rounded-lg bg-white shadow-md">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
