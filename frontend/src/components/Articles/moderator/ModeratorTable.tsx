@@ -25,7 +25,7 @@ import {
     Link2,
     MessageSquareText,
     Newspaper,
-    Search,
+    Loader,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -121,7 +121,7 @@ const columns = [
         },
         header: () => (
             <span className="flex items-center">
-                <Search className="mr-2" size={16} /> Status
+                <Loader className="mr-2" size={16} /> Status
             </span>
         ),
     }),
