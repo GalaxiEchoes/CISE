@@ -15,7 +15,7 @@ export class ArticleService {
     async listAllPublic(): Promise<Article[]> {
         return await this.articleModel
             .find({
-                status: { $in: [null, ""] },
+                status: { $in: [null, "", "accepted"] },
             })
             .exec();
     }
@@ -26,7 +26,17 @@ export class ArticleService {
             .exec();
     }
 
+    async listAllAnalyst(): Promise<Article[]> {
+        return await this.articleModel
+            .find({ status: { $in: ["to analyze", "analyzing"] } })
+            .exec();
+    }
+
     async updateStatus(id: string, status: string) {
+        return await this.articleModel.findByIdAndUpdate(id, { status }).exec();
+    }
+
+    async updateStatusAnalyst(id: string, status: string) {
         return await this.articleModel.findByIdAndUpdate(id, { status }).exec();
     }
 
