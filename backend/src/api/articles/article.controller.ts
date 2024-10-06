@@ -129,7 +129,19 @@ export class ArticleController {
     @Get("/:id")
     async findOne(@Param("id") id: string) {
         try {
-            return this.articleService.findOne(id);
+            const article = await this.articleService.findOne(id);
+
+            const acceptedStatuses = ["accepted", null, ""];
+            if (!acceptedStatuses.includes(article.status)) {
+                throw new HttpException(
+                    {
+                        status: HttpStatus.NOT_FOUND,
+                        error: "No Article found",
+                    },
+                    HttpStatus.NOT_FOUND,
+                    { cause: error },
+                );
+            }
         } catch {
             throw new HttpException(
                 {
