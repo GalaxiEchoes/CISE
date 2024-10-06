@@ -1,6 +1,9 @@
 "use client";
 
-import { apiGetModeratorArticles } from "../../../lib/Api";
+import {
+    apiGetModeratorArticles,
+    apiSaveArticleStatus,
+} from "../../../lib/Api";
 import { Article } from "../../../models/Articles";
 import {
     createColumnHelper,
@@ -28,125 +31,157 @@ import {
     Loader,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const ch = createColumnHelper<Article>();
-
-const columnOptions = [
-    { value: "title", label: "Title" },
-    { value: "authors", label: "Authors" },
-    { value: "source", label: "Source" },
-    { value: "pubyear", label: "Year" },
-    { value: "doi", label: "DOI" },
-    { value: "claim", label: "Claim" },
-    { value: "evidence", label: "Evidence" },
-];
-
-const columns = [
-    ch.accessor("title", {
-        id: "title",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <BookType className="mr-2" size={16} /> Title
-            </span>
-        ),
-    }),
-
-    ch.accessor("authors", {
-        id: "authors",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <BookUser className="mr-2" size={16} /> Authors
-            </span>
-        ),
-    }),
-
-    ch.accessor("source", {
-        id: "source",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <Info className="mr-2" size={16} /> Source
-            </span>
-        ),
-    }),
-
-    ch.accessor("pubyear", {
-        id: "pubyear",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <CalendarDays className="mr-2" size={16} /> Year
-            </span>
-        ),
-    }),
-
-    ch.accessor("doi", {
-        id: "doi",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <Link2 className="mr-2" size={16} /> DOI
-            </span>
-        ),
-    }),
-
-    ch.accessor("claim", {
-        id: "claim",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <MessageSquareText className="mr-2" size={16} /> Claim
-            </span>
-        ),
-    }),
-
-    ch.accessor("evidence", {
-        id: "evidence",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <Newspaper className="mr-2" size={16} /> Evidence
-            </span>
-        ),
-    }),
-
-    ch.accessor("status", {
-        id: "status",
-        cell: (info) => {
-            console.log(info.getValue());
-            return info.getValue();
-        },
-        header: () => (
-            <span className="flex items-center">
-                <Loader className="mr-2" size={16} /> Status
-            </span>
-        ),
-    }),
-];
 
 export default function ModeratorTable() {
     const [articles, setArticles] = useState<Article[]>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
     const router = useRouter();
 
+    const loadArticles = async () => {
+        try {
+            const res = await apiGetModeratorArticles();
+            if (res?.ok) {
+                setArticles(await res?.json());
+            }
+        } catch (error) {
+            console.error("Error fetching articles:", error);
+        }
+    };
+
+    const columns = useMemo(
+        () => [
+            ch.accessor("title", {
+                id: "title",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <BookType className="mr-2" size={16} /> Title
+                    </span>
+                ),
+            }),
+
+            ch.accessor("authors", {
+                id: "authors",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <BookUser className="mr-2" size={16} /> Authors
+                    </span>
+                ),
+            }),
+
+            ch.accessor("source", {
+                id: "source",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <Info className="mr-2" size={16} /> Source
+                    </span>
+                ),
+            }),
+
+            ch.accessor("pubyear", {
+                id: "pubyear",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <CalendarDays className="mr-2" size={16} /> Year
+                    </span>
+                ),
+            }),
+
+            ch.accessor("doi", {
+                id: "doi",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <Link2 className="mr-2" size={16} /> DOI
+                    </span>
+                ),
+            }),
+
+            ch.accessor("claim", {
+                id: "claim",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <MessageSquareText className="mr-2" size={16} /> Claim
+                    </span>
+                ),
+            }),
+
+            ch.accessor("evidence", {
+                id: "evidence",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <Newspaper className="mr-2" size={16} /> Evidence
+                    </span>
+                ),
+            }),
+
+            ch.accessor("status", {
+                id: "status",
+                cell: (info) => {
+                    const val = info.getValue();
+
+                    const onChange = async (
+                        e: React.ChangeEvent<HTMLSelectElement>,
+                    ) => {
+                        const articleId = articles[info.row.index]._id;
+                        if (articleId) {
+                            await apiSaveArticleStatus(
+                                articleId,
+                                e.target.value,
+                            );
+                            loadArticles();
+                        }
+                    };
+
+                    const statuses = [
+                        "awaiting",
+                        "reviewing",
+                        "to analyze",
+                        "rejected",
+                    ];
+
+                    return (
+                        <select
+                            onClick={(e) => e.stopPropagation()}
+                            value={val}
+                            onChange={onChange}
+                        >
+                            {statuses.map((status) => (
+                                <option
+                                    key={status}
+                                    value={status}
+                                    selected={status === val}
+                                >
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+                    );
+                },
+                header: () => (
+                    <span className="flex items-center">
+                        <Loader className="mr-2" size={16} /> Status
+                    </span>
+                ),
+            }),
+        ],
+        [articles],
+    );
+
     const handleClick = (_id: string) => {
         router.push(`articles/show/${_id}`);
     };
 
     useEffect(() => {
-        (async () => {
-            try {
-                const res = await apiGetModeratorArticles();
-                if (res?.ok) {
-                    setArticles(await res?.json());
-                }
-            } catch (error) {
-                console.error("Error fetching articles:", error);
-            }
-        })();
+        loadArticles();
     }, []);
 
     const table = useReactTable({

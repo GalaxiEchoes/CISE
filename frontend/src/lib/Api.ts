@@ -50,6 +50,10 @@ export const apiGetModeratorArticles = async () => {
     return await apiGet(`/api/Article/moderator`);
 };
 
+export const apiSaveArticleStatus = async (id: string, status: string) => {
+    return await apiPost(`/api/Article/moderator/status/${id}`, { status });
+};
+
 /**
  * @Base
  */

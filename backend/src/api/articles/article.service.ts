@@ -22,10 +22,12 @@ export class ArticleService {
 
     async listAllModerator(): Promise<Article[]> {
         return await this.articleModel
-            .find({
-                status: "awaiting",
-            })
+            .find({ status: { $in: ["awaiting", "reviewing"] } })
             .exec();
+    }
+
+    async updateStatus(id: string, status: string) {
+        return await this.articleModel.findByIdAndUpdate(id, { status }).exec();
     }
 
     async findOne(id: string): Promise<Article> {

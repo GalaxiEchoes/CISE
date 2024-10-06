@@ -52,6 +52,26 @@ export class ArticleController {
         }
     }
 
+    @Post("/moderator/status/:id")
+    @Auth(...authorisation.moderator)
+    async updateStatus(
+        @Param("id") id: string,
+        @Body("status") status: string,
+    ) {
+        try {
+            return this.articleService.updateStatus(id, status);
+        } catch {
+            throw new HttpException(
+                {
+                    status: HttpStatus.BAD_REQUEST,
+                    error: "Unable to update this article",
+                },
+                HttpStatus.BAD_REQUEST,
+                { cause: error },
+            );
+        }
+    }
+
     @Get("/moderator")
     @Auth(...authorisation.moderator)
     async getModeratorArticles() {
