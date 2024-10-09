@@ -142,6 +142,7 @@ export class ArticleController {
                     { cause: error },
                 );
             }
+            return article;
         } catch {
             throw new HttpException(
                 {
