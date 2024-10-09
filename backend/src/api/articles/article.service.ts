@@ -12,8 +12,32 @@ export class ArticleService {
         return "article route testing";
     }
 
-    async findAll(): Promise<Article[]> {
-        return await this.articleModel.find().exec();
+    async listAllPublic(): Promise<Article[]> {
+        return await this.articleModel
+            .find({
+                status: { $in: [null, "", "accepted"] },
+            })
+            .exec();
+    }
+
+    async listAllModerator(): Promise<Article[]> {
+        return await this.articleModel
+            .find({ status: { $in: ["awaiting", "reviewing"] } })
+            .exec();
+    }
+
+    async listAllAnalyst(): Promise<Article[]> {
+        return await this.articleModel
+            .find({ status: { $in: ["to analyze", "analyzing"] } })
+            .exec();
+    }
+
+    async updateStatus(id: string, status: string) {
+        return await this.articleModel.findByIdAndUpdate(id, { status }).exec();
+    }
+
+    async updateStatusAnalyst(id: string, status: string) {
+        return await this.articleModel.findByIdAndUpdate(id, { status }).exec();
     }
 
     async findOne(id: string): Promise<Article> {
@@ -29,7 +53,10 @@ export class ArticleService {
     }
 
     async create(createArticleDto: CreateArticleDto) {
-        return await this.articleModel.create(createArticleDto);
+        return await this.articleModel.create({
+            ...createArticleDto,
+            status: "awaiting",
+        });
     }
 
     async update(id: string, createArticleDto: CreateArticleDto) {
