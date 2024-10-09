@@ -46,25 +46,6 @@ export const apiValidateAuthorisation = async (roles: any): Promise<any> => {
     return await apiPost(`/api/Account/validateAuthorisation`, roles);
 };
 
-export const apiGetModeratorArticles = async () => {
-    return await apiGet(`/api/Article/moderator`);
-};
-
-export const apiSaveArticleStatus = async (id: string, status: string) => {
-    return await apiPost(`/api/Article/moderator/status/${id}`, { status });
-};
-
-export const apiGetAnalystArticles = async () => {
-    return await apiGet(`/api/Article/analyst`);
-};
-
-export const apiSaveArticleStatusAnalyst = async (
-    id: string,
-    status: string,
-) => {
-    return await apiPost(`/api/Article/analyst/status/${id}`, { status });
-};
-
 /**
  * @Base
  */

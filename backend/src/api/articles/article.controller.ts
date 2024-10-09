@@ -23,7 +23,7 @@ export class ArticleController {
     @Get("/")
     async findAll() {
         try {
-            return this.articleService.listAllPublic();
+            return this.articleService.findAll();
         } catch {
             throw new HttpException(
                 {
@@ -52,96 +52,10 @@ export class ArticleController {
         }
     }
 
-    @Post("/moderator/status/:id")
-    @Auth(...authorisation.moderator)
-    async updateStatus(
-        @Param("id") id: string,
-        @Body("status") status: string,
-    ) {
-        try {
-            return this.articleService.updateStatus(id, status);
-        } catch {
-            throw new HttpException(
-                {
-                    status: HttpStatus.BAD_REQUEST,
-                    error: "Unable to update this article",
-                },
-                HttpStatus.BAD_REQUEST,
-                { cause: error },
-            );
-        }
-    }
-
-    @Get("/moderator")
-    @Auth(...authorisation.moderator)
-    async getModeratorArticles() {
-        try {
-            return this.articleService.listAllModerator();
-        } catch {
-            throw new HttpException(
-                {
-                    status: HttpStatus.NOT_FOUND,
-                    error: "No Articles found",
-                },
-                HttpStatus.NOT_FOUND,
-                { cause: error },
-            );
-        }
-    }
-
-    @Post("/analyst/status/:id")
-    @Auth(...authorisation.analyst)
-    async updateStatusAnalyst(
-        @Param("id") id: string,
-        @Body("status") status: string,
-    ) {
-        try {
-            return this.articleService.updateStatusAnalyst(id, status);
-        } catch {
-            throw new HttpException(
-                {
-                    status: HttpStatus.BAD_REQUEST,
-                    error: "Unable to update this article",
-                },
-                HttpStatus.BAD_REQUEST,
-                { cause: error },
-            );
-        }
-    }
-
-    @Get("/analyst")
-    @Auth(...authorisation.analyst)
-    async getAnalystArticles() {
-        try {
-            return this.articleService.listAllAnalyst();
-        } catch {
-            throw new HttpException(
-                {
-                    status: HttpStatus.NOT_FOUND,
-                    error: "No Articles found",
-                },
-                HttpStatus.NOT_FOUND,
-                { cause: error },
-            );
-        }
-    }
-
     @Get("/:id")
     async findOne(@Param("id") id: string) {
         try {
-            const article = await this.articleService.findOne(id);
-
-            const acceptedStatuses = ["accepted", null, ""];
-            if (!acceptedStatuses.includes(article.status)) {
-                throw new HttpException(
-                    {
-                        status: HttpStatus.NOT_FOUND,
-                        error: "No Article found",
-                    },
-                    HttpStatus.NOT_FOUND,
-                    { cause: error },
-                );
-            }
+            return this.articleService.findOne(id);
         } catch {
             throw new HttpException(
                 {

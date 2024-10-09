@@ -32,8 +32,5 @@ export class Article {
 
     @Prop()
     averageRating: number;
-
-    @Prop()
-    status: string;
 }
 export const ArticleSchema = SchemaFactory.createForClass(Article);
