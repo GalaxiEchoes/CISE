@@ -1,129 +1,179 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import {
+    apiGetAnalystArticles,
+    apiSaveArticleStatusAnalyst,
+} from "../../../lib/Api";
+import { Article } from "../../../models/Articles";
 import {
     createColumnHelper,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getSortedRowModel,
-    useReactTable,
     getPaginationRowModel,
+    getSortedRowModel,
     SortingState,
+    useReactTable,
 } from "@tanstack/react-table";
 import {
-    Info,
-    CalendarDays,
-    MessageSquareText,
-    Link2,
-    Newspaper,
-    BookUser,
-    BookType,
     ArrowUpDown,
-    Search,
-    ChevronsLeft,
+    BookType,
+    BookUser,
+    CalendarDays,
     ChevronLeft,
     ChevronRight,
+    ChevronsLeft,
     ChevronsRight,
+    Info,
+    Link2,
+    MessageSquareText,
+    Newspaper,
+    Loader,
 } from "lucide-react";
-import { Article } from "@/models/Articles";
-import { apiGetArticles } from "@/lib/Api";
 import { useRouter } from "next/navigation";
-import Select from "react-select";
+import { useEffect, useMemo, useState } from "react";
 
 const ch = createColumnHelper<Article>();
 
-const columnOptions = [
-    { value: "title", label: "Title" },
-    { value: "authors", label: "Authors" },
-    { value: "source", label: "Source" },
-    { value: "pubyear", label: "Year" },
-    { value: "doi", label: "DOI" },
-    { value: "claim", label: "Claim" },
-    { value: "evidence", label: "Evidence" },
-];
-
-const columns = [
-    ch.accessor("title", {
-        id: "title",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <BookType className="mr-2" size={16} /> Title
-            </span>
-        ),
-    }),
-
-    ch.accessor("authors", {
-        id: "authors",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <BookUser className="mr-2" size={16} /> Authors
-            </span>
-        ),
-    }),
-
-    ch.accessor("source", {
-        id: "source",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <Info className="mr-2" size={16} /> Source
-            </span>
-        ),
-    }),
-
-    ch.accessor("pubyear", {
-        id: "pubyear",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <CalendarDays className="mr-2" size={16} /> Year
-            </span>
-        ),
-    }),
-
-    ch.accessor("doi", {
-        id: "doi",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <Link2 className="mr-2" size={16} /> DOI
-            </span>
-        ),
-    }),
-
-    ch.accessor("claim", {
-        id: "claim",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <MessageSquareText className="mr-2" size={16} /> Claim
-            </span>
-        ),
-    }),
-
-    ch.accessor("evidence", {
-        id: "evidence",
-        cell: (info) => info.getValue(),
-        header: () => (
-            <span className="flex items-center">
-                <Newspaper className="mr-2" size={16} /> Evidence
-            </span>
-        ),
-    }),
-];
-
-export default function ArticleTable() {
+export default function AnalystTable() {
     const [articles, setArticles] = useState<Article[]>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [globalFilter, setGlobalFilter] = useState("");
-    const [selectedColumns, setSelectedColumns] = useState(columnOptions);
     const router = useRouter();
 
-    const filteredColumns = columns.filter((col) =>
-        selectedColumns.some((option) => col.id === option.value),
+    const loadArticles = async () => {
+        try {
+            const res = await apiGetAnalystArticles();
+            if (res?.ok) {
+                setArticles(await res?.json());
+            }
+        } catch (error) {
+            console.error("Error fetching articles:", error);
+        }
+    };
+
+    const columns = useMemo(
+        () => [
+            ch.accessor("title", {
+                id: "title",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <BookType className="mr-2" size={16} /> Title
+                    </span>
+                ),
+            }),
+
+            ch.accessor("authors", {
+                id: "authors",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <BookUser className="mr-2" size={16} /> Authors
+                    </span>
+                ),
+            }),
+
+            ch.accessor("source", {
+                id: "source",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <Info className="mr-2" size={16} /> Source
+                    </span>
+                ),
+            }),
+
+            ch.accessor("pubyear", {
+                id: "pubyear",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <CalendarDays className="mr-2" size={16} /> Year
+                    </span>
+                ),
+            }),
+
+            ch.accessor("doi", {
+                id: "doi",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <Link2 className="mr-2" size={16} /> DOI
+                    </span>
+                ),
+            }),
+
+            ch.accessor("claim", {
+                id: "claim",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <MessageSquareText className="mr-2" size={16} /> Claim
+                    </span>
+                ),
+            }),
+
+            ch.accessor("evidence", {
+                id: "evidence",
+                cell: (info) => info.getValue(),
+                header: () => (
+                    <span className="flex items-center">
+                        <Newspaper className="mr-2" size={16} /> Evidence
+                    </span>
+                ),
+            }),
+
+            ch.accessor("status", {
+                id: "status",
+                cell: (info) => {
+                    const val = info.getValue();
+
+                    const onChange = async (
+                        e: React.ChangeEvent<HTMLSelectElement>,
+                    ) => {
+                        const articleId = articles[info.row.index]._id;
+                        if (articleId) {
+                            await apiSaveArticleStatusAnalyst(
+                                articleId,
+                                e.target.value,
+                            );
+                            loadArticles();
+                        }
+                    };
+
+                    const statuses = [
+                        "to analyze",
+                        "analyzing",
+                        "accepted",
+                        "rejected",
+                    ];
+
+                    return (
+                        <select
+                            onClick={(e) => e.stopPropagation()}
+                            value={val}
+                            onChange={onChange}
+                        >
+                            {statuses.map((status) => (
+                                <option
+                                    key={status}
+                                    value={status}
+                                    selected={status === val}
+                                >
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+                    );
+                },
+                header: () => (
+                    <span className="flex items-center">
+                        <Loader className="mr-2" size={16} /> Status
+                    </span>
+                ),
+            }),
+        ],
+        [articles],
     );
 
     const handleClick = (_id: string) => {
@@ -131,26 +181,14 @@ export default function ArticleTable() {
     };
 
     useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const res = await apiGetArticles();
-                if (res?.ok) {
-                    setArticles(await res?.json());
-                }
-            } catch (error) {
-                console.error("Error fetching articles:", error);
-            }
-        };
-
-        fetchArticles();
-    }, [globalFilter]);
+        loadArticles();
+    }, []);
 
     const table = useReactTable({
         data: articles,
-        columns: filteredColumns,
+        columns,
         state: {
             sorting,
-            globalFilter,
         },
         initialState: {
             pagination: {
@@ -163,43 +201,12 @@ export default function ArticleTable() {
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
 
-        onGlobalFilterChange: setGlobalFilter,
         getFilteredRowModel: getFilteredRowModel(),
     });
 
     return (
         <>
-            <div className="max-w-3/4 mx-auto flex min-h-screen flex-col overflow-x-auto px-4 py-12 sm:px-6 lg:px-8">
-                <div className="mb-4 flex items-center gap-4">
-                    <div className="relative flex-grow">
-                        <input
-                            value={globalFilter ?? ""}
-                            onChange={(e) => setGlobalFilter(e.target.value)}
-                            placeholder="Search..."
-                            className="box-size-border w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        />
-                        <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400"
-                            size={20}
-                        />
-                    </div>
-                </div>
-                <div className="mb-4 flex items-center gap-4">
-                    <h1>Selected Columns: </h1>
-                    <Select
-                        options={columnOptions}
-                        isMulti
-                        value={selectedColumns}
-                        onChange={(newValue) =>
-                            setSelectedColumns([...newValue] as {
-                                value: string;
-                                label: string;
-                            }[])
-                        }
-                        placeholder="Select columns to display"
-                    />
-                </div>
-
+            <div className="max-w-3/4 mx-auto flex flex-col overflow-x-auto px-4 py-12 sm:px-6 lg:px-8">
                 <div className="overflow-x-auto rounded-lg bg-white shadow-md">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">

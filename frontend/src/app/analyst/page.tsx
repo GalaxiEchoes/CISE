@@ -1,4 +1,5 @@
 import { AuthGuardAnalyst } from "@/auth/AuthGuard";
+import AnalystTable from "@/components/Articles/analyst/AnalystTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AnalystPage() {
@@ -9,7 +10,7 @@ export default function AnalystPage() {
                     <CardTitle>Analyst Page</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>Analyst Table</p>
+                    <AnalystTable />
                 </CardContent>
             </Card>
         </AuthGuardAnalyst>

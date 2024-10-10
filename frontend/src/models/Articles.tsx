@@ -14,6 +14,7 @@ export type Article = {
     evidence?: string;
     ratings?: UserRating[];
     averageRating?: number;
+    status?: string;
 };
 
 export const DefaultEmptyArticle: Article = {
