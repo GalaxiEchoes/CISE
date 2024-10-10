@@ -15,7 +15,7 @@ export class ArticleService {
     async listAllPublic(): Promise<Article[]> {
         return await this.articleModel
             .find({
-                status: { $in: [null, "", "accepted"] },
+                status: { $in: [null, "", "accepted", undefined] },
             })
             .exec();
     }
