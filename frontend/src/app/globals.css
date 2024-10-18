@@ -74,8 +74,10 @@
 }
 
 .mainContent{
-  flex-grow: 1;
-  transition: margin-left 0.5s;
+  /*margin-left: 200px;*/
+    transition: margin-left 0.5s;
+    flex-grow: 1;
+    overflow-x: hidden;
 }
 
 .toggleButton {

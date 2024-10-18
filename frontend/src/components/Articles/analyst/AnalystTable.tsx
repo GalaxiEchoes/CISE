@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
     apiGetAnalystArticles,
     apiSaveArticleStatusAnalyst,
@@ -172,12 +173,35 @@ export default function AnalystTable() {
                     </span>
                 ),
             }),
+
+            {
+                id: "actions",
+                header: () => <span>Actions</span>,
+                cell: (info: any) => {
+                    const articleId = articles[info.row.index]?._id || "";
+
+                    return (
+                        <Button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleArticleEdit(articleId);
+                            }}
+                            className="w-20"
+                        >
+                            Edit
+                        </Button>
+                    );
+                },
+            },
         ],
         [articles],
     );
-
     const handleClick = (_id: string) => {
-        router.push(`articles/show/${_id}`);
+        router.push(`/articles/show/${_id}`);
+    };
+
+    const handleArticleEdit = (_id: string) => {
+        router.push(`/articles/edit/${_id}`);
     };
 
     useEffect(() => {
@@ -206,144 +230,147 @@ export default function AnalystTable() {
 
     return (
         <>
-            <div className="max-w-3/4 mx-auto flex flex-col overflow-x-auto px-4 py-12 sm:px-6 lg:px-8">
-                <div className="overflow-x-auto rounded-lg bg-white shadow-md">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <tr key={headerGroup.id}>
-                                    {headerGroup.headers.map((header) => (
-                                        <th
-                                            key={header.id}
-                                            className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                                        >
-                                            <div
-                                                {...{
-                                                    className:
-                                                        header.column.getCanSort()
-                                                            ? "cursor-pointer select-none flex items-center"
-                                                            : "",
-                                                    onClick:
-                                                        header.column.getToggleSortingHandler(),
-                                                }}
+            <div className="max-w-full overflow-x-auto">
+                <div className="flex flex-grow flex-col overflow-hidden px-4 py-12 sm:px-6 lg:px-8">
+                    <div className="h-full w-full overflow-y-auto rounded-lg bg-white shadow-md">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                {table.getHeaderGroups().map((headerGroup) => (
+                                    <tr key={headerGroup.id}>
+                                        {headerGroup.headers.map((header) => (
+                                            <th
+                                                key={header.id}
+                                                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                            >
+                                                <div
+                                                    {...{
+                                                        className:
+                                                            header.column.getCanSort()
+                                                                ? "cursor-pointer select-none flex items-center"
+                                                                : "",
+                                                        onClick:
+                                                            header.column.getToggleSortingHandler(),
+                                                    }}
+                                                >
+                                                    {flexRender(
+                                                        header.column.columnDef
+                                                            .header,
+                                                        header.getContext(),
+                                                    )}
+                                                    <ArrowUpDown
+                                                        className="ml-2"
+                                                        size={14}
+                                                    />
+                                                </div>
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
+                            <tbody className="divide-y divide-gray-200 bg-white">
+                                {table.getRowModel().rows.map((row) => (
+                                    <tr
+                                        key={row.id}
+                                        className="hover:bg-gray-50"
+                                        onClick={() => {
+                                            const _id = row.original._id;
+                                            if (_id) {
+                                                handleClick(_id);
+                                            }
+                                        }}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <td
+                                                key={cell.id}
+                                                className="px-6 py-4 text-sm text-gray-500"
                                             >
                                                 {flexRender(
-                                                    header.column.columnDef
-                                                        .header,
-                                                    header.getContext(),
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext(),
                                                 )}
-                                                <ArrowUpDown
-                                                    className="ml-2"
-                                                    size={14}
-                                                />
-                                            </div>
-                                        </th>
-                                    ))}
-                                </tr>
-                            ))}
-                        </thead>
-                        <tbody className="divide-y divide-gray-200 bg-white">
-                            {table.getRowModel().rows.map((row) => (
-                                <tr
-                                    key={row.id}
-                                    className="hover:bg-gray-50"
-                                    onClick={() => {
-                                        const _id = row.original._id;
-                                        if (_id) {
-                                            handleClick(_id);
-                                        }
-                                    }}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <td
-                                            key={cell.id}
-                                            className="px-6 py-4 text-sm text-gray-500"
-                                        >
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext(),
-                                            )}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div className="mt-4 flex flex-col items-center justify-between text-sm text-gray-700 sm:flex-row">
-                    <div className="mb-4 flex items-center sm:mb-0">
-                        <span className="mr-2">Items per page</span>
-                        <select
-                            className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                            value={table.getState().pagination.pageSize}
-                            onChange={(e) => {
-                                table.setPageSize(Number(e.target.value));
-                            }}
-                        >
-                            {[5, 10, 20, 30].map((pageSize) => (
-                                <option key={pageSize} value={pageSize}>
-                                    {pageSize}
-                                </option>
-                            ))}
-                        </select>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                        <button
-                            className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-                            onClick={() => table.setPageIndex(0)}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            <ChevronsLeft size={20} />
-                        </button>
-
-                        <button
-                            className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            <ChevronLeft size={20} />
-                        </button>
-
-                        <span className="flex items-center">
-                            <input
-                                min={1}
-                                max={table.getPageCount()}
-                                type="number"
-                                value={
-                                    table.getState().pagination.pageIndex + 1
-                                }
+                    <div className="mt-4 flex flex-col items-center justify-between text-sm text-gray-700 sm:flex-row">
+                        <div className="mb-4 flex items-center sm:mb-0">
+                            <span className="mr-2">Items per page</span>
+                            <select
+                                className="rounded-md border border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                value={table.getState().pagination.pageSize}
                                 onChange={(e) => {
-                                    const page = e.target.value
-                                        ? Number(e.target.value) - 1
-                                        : 0;
-                                    table.setPageIndex(page);
+                                    table.setPageSize(Number(e.target.value));
                                 }}
-                                className="w-16 rounded-md border border-gray-300 p-2 text-center"
-                            />
-                            <span className="ml-1">
-                                of {table.getPageCount()}
+                            >
+                                {[5, 10, 20, 30].map((pageSize) => (
+                                    <option key={pageSize} value={pageSize}>
+                                        {pageSize}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                            <button
+                                className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                                onClick={() => table.setPageIndex(0)}
+                                disabled={!table.getCanPreviousPage()}
+                            >
+                                <ChevronsLeft size={20} />
+                            </button>
+
+                            <button
+                                className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                                onClick={() => table.previousPage()}
+                                disabled={!table.getCanPreviousPage()}
+                            >
+                                <ChevronLeft size={20} />
+                            </button>
+
+                            <span className="flex items-center">
+                                <input
+                                    min={1}
+                                    max={table.getPageCount()}
+                                    type="number"
+                                    value={
+                                        table.getState().pagination.pageIndex +
+                                        1
+                                    }
+                                    onChange={(e) => {
+                                        const page = e.target.value
+                                            ? Number(e.target.value) - 1
+                                            : 0;
+                                        table.setPageIndex(page);
+                                    }}
+                                    className="w-16 rounded-md border border-gray-300 p-2 text-center"
+                                />
+                                <span className="ml-1">
+                                    of {table.getPageCount()}
+                                </span>
                             </span>
-                        </span>
 
-                        <button
-                            className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage()}
-                        >
-                            <ChevronRight size={20} />
-                        </button>
+                            <button
+                                className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                                onClick={() => table.nextPage()}
+                                disabled={!table.getCanNextPage()}
+                            >
+                                <ChevronRight size={20} />
+                            </button>
 
-                        <button
-                            className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-                            onClick={() =>
-                                table.setPageIndex(table.getPageCount() - 1)
-                            }
-                            disabled={!table.getCanNextPage()}
-                        >
-                            <ChevronsRight size={20} />
-                        </button>
+                            <button
+                                className="rounded-md bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                                onClick={() =>
+                                    table.setPageIndex(table.getPageCount() - 1)
+                                }
+                                disabled={!table.getCanNextPage()}
+                            >
+                                <ChevronsRight size={20} />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

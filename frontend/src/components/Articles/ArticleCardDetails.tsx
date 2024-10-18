@@ -46,11 +46,6 @@ export const ArticleCardDetails = ({ article }: IProp) => {
                     <li>{`evidence: ${article?.evidence}`}</li>
                 </ul>
             </CardContent>
-            <CardFooter>
-                <Link href={`/articles/edit/${article._id}`}>
-                    <Button>Edit Article</Button>
-                </Link>
-            </CardFooter>
         </Card>
     );
 };
