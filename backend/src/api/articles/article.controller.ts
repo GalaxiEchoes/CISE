@@ -131,7 +131,13 @@ export class ArticleController {
         try {
             const article = await this.articleService.findOne(id);
 
-            const acceptedStatuses = ["accepted", null, "", undefined];
+            const acceptedStatuses = [
+                "accepted",
+                null,
+                "",
+                undefined,
+                "to analyze",
+            ];
             if (!acceptedStatuses.includes(article.status)) {
                 throw new HttpException(
                     {
