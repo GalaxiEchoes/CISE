@@ -176,10 +176,6 @@ export default function ModeratorTable() {
         [articles],
     );
 
-    const handleClick = (_id: string) => {
-        router.push(`articles/show/${_id}`);
-    };
-
     useEffect(() => {
         loadArticles();
     }, []);
@@ -244,16 +240,7 @@ export default function ModeratorTable() {
                         </thead>
                         <tbody className="divide-y divide-gray-200 bg-white">
                             {table.getRowModel().rows.map((row) => (
-                                <tr
-                                    key={row.id}
-                                    className="hover:bg-gray-50"
-                                    onClick={() => {
-                                        const _id = row.original._id;
-                                        if (_id) {
-                                            handleClick(_id);
-                                        }
-                                    }}
-                                >
+                                <tr key={row.id} className="hover:bg-gray-50">
                                     {row.getVisibleCells().map((cell) => (
                                         <td
                                             key={cell.id}
